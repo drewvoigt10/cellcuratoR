@@ -3,7 +3,7 @@
 
 <img align="right" src="www/cellcuratoR.png" width="231.2" height="267.3">
 
-With cellcuratoR, any Seurat-processed (version > 3.0.0) object can easily be converted into a format interpretable by the R-shiny reactive user interface for interactive, exploratory data analysis. The cellcuratoR package was used to create the freely-accessible Single-Cell Ocular Tissue Analysis (SCOTA) system, which is available at www.oculargeneexpression.org. 
+With cellcuratoR, any Seurat-processed (version > 3.0.0) object can easily be converted into a format interpretable by the R-shiny reactive user interface for interactive, exploratory data analysis. This package allows bioinformaticians to interact with and share single-cell RNA sequencing data, facilitating generating violin plots, reclustering subsets of cells, and flexible differential expression analysis. The cellcuratoR package was used to create the freely-accessible Single-Cell Ocular Tissue Analysis (SCOTA) system, which is available at www.oculargeneexpression.org. 
 
 ## Installation
 
@@ -28,8 +28,8 @@ cellcuratoR converts a Seurat-analyzed single-cell RNA sequencing dataset into a
 Once an RNA sequencing dataset has undergone quality control and clustering in Seurat, the data can be exported by the the export_seurat_object() function. A detailed vignette of this object is available by (## TASK: how to access vignette?). Briefly, the user should first create a directory (eg my_cellcuratoR_objects) in which to store exported data objects. The export_seurat_object() function requires the following basic arguments:
 ..* seurat_object: the S4 Seurat object of interest.
 ..* final_cluster_column_namethe column name (characater string) in the meta.data that corresponds to the final cluster label of each cell. 
-..* library_id_column_name: the column name (charcater string) in the meta.data that corresponds to the originating library of each cell. For canonical-correlation analyzed datasets, this is often the "orig.ident" column within the meta.data. 
-..* classification_column_name: the column name (charcater string) in the meta.data that corresponds to the classified cell type of interest. If cell type classification has not occured, the column name (character string) in the meta.data that corresponds to cluster number should be provided. 
+..* library_id_column_name: the column name (character string) in the meta.data that corresponds to the originating library of each cell. For canonical-correlation analyzed datasets, this is often the "orig.ident" column within the meta.data. 
+..* classification_column_name: the column name (character string) in the meta.data that corresponds to the classified cell type of interest. If cell type classification has not occured, the column name (character string) in the meta.data that corresponds to cluster number should be provided. 
 ..* export_data_path: a datapath (in the form of a character string) where the Seurat object can be exported (eg my_cellcuratoR_objects/my_dataset1/)
 
 ## C. Launching cellcuratoR
