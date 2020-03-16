@@ -1,4 +1,7 @@
 # cellcuratoR
+#### Sharing interactive single-cell gene expression visualizations from Seurat
+
+<img align="right" src="www/cellcuratoR.png" width="231.2" height="267.3">
 
 cellcuratoR is an R package for sharing interactive single-cell gene expression data from Seurat. Any Seurat-processed (version > 3.0.0) object can easily be converted into a format interpretable by the R-shiny reactive user interface for interactive, exploratory data analysis. The cellcuratoR package was used to create the freely-accessible SCOTA: Single-Cell Ocular Tissue Analysis system, which is available at www.oculargeneexpression.org. 
 
