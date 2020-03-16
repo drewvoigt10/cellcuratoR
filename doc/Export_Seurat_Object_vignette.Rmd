@@ -1,0 +1,59 @@
+---
+title: "Export Seurat Object"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Export-Seurat-Object}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Overview
+This vignette will walk through the exportation of a processed seurat object that is compatible with the SCOTA shiny visualization system. Compatible S4 Seurat input objects should be supplied by the user that have either (A) been processed with Seuart (version 3) or (B) been updated to a version 3 Seurat object with the function UpdateSeuratObject(). Further, within the meta.data of the Seurat object, the user should have columns corresponding to a final cluster designation, a library-id, and a cell type classification, as walked through in this tutorial.
+
+We will walk through the exportation of the pbmc_small dataset, which is provided within version 3 of Seurat.
+ 
+```{r cars}
+library(Seurat)
+library(tidyverse)
+library(SCOTA)
+
+head(pbmc_small@meta.data)
+```
+
+## Processing
+We first add the appropriate meta.data to our input Seurat object, pbmc_small, as would often be included in an initial single-cell analysis workflow. This assumes that the user has already found initial clusters for their object with the command FindClusters(). More information on cluster assignment can be found within the seurat vignettes: https://satijalab.org/seurat/v3.1/pbmc3k_tutorial.html.
+
+We first classify clusters into cell types and add this cell type classification to the meta.data
+```{r}
+celltype <- plyr::mapvalues(x = pbmc_small@meta.data$RNA_snn_res.1, 
+                            from = seq(from = 0, to = 2), 
+                            to = c("celltype_A", "celltype_B", "celltype_C"))
+pbmc_small@meta.data <- data.frame(pbmc_small@meta.data, celltype)
+```
+
+Next, we export the seurat object using the export_shiny_object() function. This will create a new directory at the argument export_data_path that contains all necessary input files for the shiny app.
+```{r message = FALSE, warning = FALSE}
+export_shiny_object(seurat_object = pbmc_small, 
+                    final_cluster_column_name = "RNA_snn_res.1",
+                    library_id_column_name = "orig.ident",
+                    cell_classification_column_name = "celltype",
+                    create_dendrogram = TRUE,
+                    custom_cluster_colors = FALSE,
+                    custom_library_colors = FALSE,
+                    export_data_path = "~/Desktop/pbmc_small_shiny/")
+```
+
+The directory structure of the shiny app is as follows:
+data2/
+  exported_dataset_1/
+  exported_dataset_2/
+ui.R
+server.R
+
+After the exported dataset has been added to the data2/ directory, the user may run the shiny app to interactively visualize the single-cell data. 
