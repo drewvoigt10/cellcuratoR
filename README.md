@@ -68,7 +68,7 @@ Differential expression is performed with the Seurat FindMarkers() function with
 
 ![](demo/DE_1_GIF.gif)
 
-### vi. Differential expression between laso selections
+### vi. Differential expression between lasso selections
 In contrast, the user may also manually identify groups for differential expression interactively. If the user selects the “manually select populations (draw lasso)” radio button, an additional, interactive dimensionality reduction plot appears on the right side of the screen. The lasso tool is automatically selected, and the user can draw a lasso around the cell population for Group 1 on the left plot and for Group 2 on the right plot. The user then may select the start differential expression analysis action button.
 
 ![](demo/DE_2_GIF.gif)
