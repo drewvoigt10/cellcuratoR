@@ -9,7 +9,8 @@
 #' @import shiny
 
 
-# wrapper for shiny::shinyApp()
+# wrapper for shinyApp()
+# adapted from MangoTheCat/shinyAppDemo (https://github.com/MangoTheCat/shinyAppDemo)
 launchApp <- function() {
   shinyApp(ui = shinyAppUI,
            server = shinyAppServer)

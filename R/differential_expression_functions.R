@@ -1,3 +1,38 @@
+# Function to get all the descendants on a tree left of a given node
+#
+# @param tree Tree object (from ape package)
+# @param node Internal node in the tree
+#
+# @return Returns all descendants left of the given node
+#
+GetLeftDescendants <- function(tree, node) {
+  daughters <- tree$edge[which(tree$edge[, 1] == node), 2]
+  if (daughters[1] <= (tree$Nnode + 1)) {
+    return(daughters[1])
+  }
+  daughter.use <- GetDescendants(tree, daughters[1])
+  daughter.use <- daughter.use[daughter.use <= (tree$Nnode + 1)]
+  return(daughter.use)
+}
+
+# Function to get all the descendants on a tree right of a given node
+#
+# @param tree Tree object (from ape package)
+# @param node Internal node in the tree
+#
+# @return Returns all descendants right of the given node
+#
+GetRightDescendants <- function(tree, node) {
+  daughters <- tree$edge[which(x = tree$edge[, 1] == node), 2]
+  if (daughters[2] <= (tree$Nnode + 1)) {
+    return(daughters[2])
+  }
+  daughter.use <- GetDescendants(tree = tree, node = daughters[2])
+  daughter.use <- daughter.use[daughter.use <= (tree$Nnode + 1)]
+  return(daughter.use)
+}
+
+
 #' Find genes that meet selected differential expression thresholds
 #'
 #' \code{find_dge_variables} returns a vector of genes that satisfy differential
@@ -29,8 +64,12 @@
 #' proportion of cells than the \code{my_minpct_threshold} will be returned.
 #'
 #' @examples
-#' find_dge_variables(seurat_obj, ident.1 = 2, ident.2 = c(3,4), my_logfc_threshold = 0.25, my_minpct_threshold = 0.5)
-#' find_dge_variables(seurat_obj, ident.1 = 3, my_logfc_threshold = 0.5, my_minpct_threshold = 0.1)
+#' \dontrun{
+#' find_dge_variables(seurat_obj, ident.1 = 2, ident.2 = c(3,4),
+#' my_logfc_threshold = 0.25, my_minpct_threshold = 0.5)
+#' find_dge_variables(seurat_obj, ident.1 = 3, my_logfc_threshold = 0.5,
+#' my_minpct_threshold = 0.1)
+#' }
 
 find_dge_variables <- function(object,
                                ident.1,

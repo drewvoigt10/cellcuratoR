@@ -11,6 +11,6 @@ gg_color_hue(n)
 }
 \description{
 \code{gg_color_hue} Returns a vector containing n unique hex colors
-Taken from stackoverflow John Colby
+Adapted from stackoverflow John Colby
 https://stackoverflow.com/questions/8197559/emulate-ggplot2-default-color-palette
 }

@@ -7,18 +7,20 @@
 #' @importFrom ggplot2 ggplot aes element_blank theme geom_point geom_text position_nudge
 #' @importFrom ggplot2 theme_classic ggtitle xlab ylab geom_tile scale_x_continuous
 #' @importFrom ggplot2 scale_fill_gradient scale_y_reverse coord_flip ggsave
-#' @importFrom dplyr full_join mutate
+#' @importFrom dplyr full_join mutate filter select arrange desc
 #' @importFrom DT renderDataTable
 #' @importFrom magrittr "%>%"
-#' @importFrom Seurat Idents DimPlot FeaturePlot GetAssayData NormalizeData FindVariableFeatures WhichCells RunUMAP RunTSNE VariableFeatures ScaleData RunPCA FindNeighbors FindClusters FindMarkers DefaultAssay
+#' @importFrom grDevices hcl
+#' @importFrom methods is new
+#' @importFrom stats hclust rnorm
+#' @importFrom Seurat Idents DimPlot FeaturePlot GetAssayData NormalizeData FindVariableFeatures WhichCells RunUMAP RunTSNE VariableFeatures ScaleData RunPCA FindNeighbors Tool FindClusters FindMarkers DefaultAssay FetchData HoverLocator AverageExpression
 #' @importFrom ggdendro dendro_data segment label
 #' @importFrom plotly ggplotly renderPlotly subplot plot_ly layout event_data
 #' @importFrom patchwork plot_layout
 #' @importFrom shiny Progress validate
 #' @importFrom tibble as_tibble rownames_to_column
-#' @importFrom rlang %||%
-#' @importFrom dplyr full_join
-#' @importFrom shinyFiles shinyDirChoose parseDirPath
+#' @importFrom rlang %||% UQ
+#' @importFrom shinyFiles shinyDirChoose parseDirPath getVolumes
 
 shinyAppServer <- shinyServer(function(session, input, output) {
   ### Chunk 1: select your dataset and load in associated data objects/RDS files
@@ -838,7 +840,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
           mutate(de_group = ifelse((final_cluster_labels %in% input$DE_class_1) & (UQ(as.symbol(as.character(input$DE_identity))) == binary_idents[1]), "Group_1",
                                    ifelse((final_cluster_labels %in% input$DE_class_1) & (UQ(as.symbol(as.character(input$DE_identity))) == binary_idents[2]), "Group_2", "none"))
           ) %>%
-          select(de_group)
+          dplyr::select(de_group)
       }
 
       loaded_data@meta.data <- data.frame(loaded_data@meta.data, de_group)
@@ -863,7 +865,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
           as_tibble() %>%
           mutate(de_group = ifelse((barcodes %in% lasso_selection_1()) & (UQ(as.symbol(as.character(input$DE_identity))) == binary_idents[1]), "Group_1",
                                    ifelse((barcodes %in% lasso_selection_1()) & (UQ(as.symbol(as.character(input$DE_identity))) == binary_idents[2]), "Group_2", "not_selected"))) %>%
-          select(de_group)
+          dplyr::select(de_group)
       }
 
       loaded_data@meta.data <- data.frame(loaded_data@meta.data, barcodes, de_group)
@@ -972,7 +974,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
   })
 
   #######################
-  ### TUTORIAL IMAGES ###
+  ### Embedded images ###
   #######################
   output$cellcuratoR <- renderImage({
     return(list(

@@ -34,7 +34,7 @@ body <- dashboardBody(
                 tabPanel("Dimensionality Reduction",
                          textOutput("instructUser"),
                          textOutput("directoryWarning"),
-                         plotlyOutput("umapPlot", height = "650px") %>% withSpinner(type = 6, color="#1F6BFF")
+                         plotlyOutput("umapPlot", height = "650px") %>% withSpinner(type = 6, color = "#1F6BFF")
                 ),
                 tabPanel("Heatmap",
                          plotlyOutput("featurePlot", height = "650px")

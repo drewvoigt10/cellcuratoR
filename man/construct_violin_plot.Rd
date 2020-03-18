@@ -8,33 +8,41 @@ construct_violin_plot(my_object, genes_to_investigate, dendrogram_input,
   colors, use_noise = TRUE, scale = "free_x")
 }
 \arguments{
-\item{my_object}{S4 object from which expression data should be extracted. Used in generating
-data in \code{\link{prepare_violin_data_colors}}.}
+\item{my_object}{S4 object from which expression data should be extracted.
+Used in generating data in \code{\link{prepare_violin_data_colors}}.}
 
-\item{genes_to_investigate}{a vector containing character strings of the genes that the user would like
-to visualize with violin plots. Used in generating data in \code{\link{prepare_violin_data_colors}}.}
+\item{genes_to_investigate}{a vector containing character strings of the
+genes that the user would like to visualize with violin plots. Used in
+generating data in \code{\link{prepare_violin_data_colors}}.}
 
-\item{dendrogram_input}{an input dendrogram that relates the expression profiles in each cluster.
-See \code{\link{export_shiny_object}} for example of generating such a dendrogram. Used in generating
-data in \code{\link{prepare_violin_data_colors}}.}
+\item{dendrogram_input}{an input dendrogram that relates the expression
+profiles in each cluster. See \code{\link{export_shiny_object}} for example
+of generating such a dendrogram. Used in generating data in
+\code{\link{prepare_violin_data_colors}}.}
 
-\item{colors}{an vector of length n_clusters to color the violin plot. The order of colors corresponds to
-the order of final_cluster_labels. Used in generating data in \code{\link{prepare_violin_data_colors}}.}
+\item{colors}{an vector of length n_clusters to color the violin plot. The
+order of colors corresponds to the order of final_cluster_labels. Used in
+generating data in \code{\link{prepare_violin_data_colors}}.}
 
-\item{use_noise}{adds random noise to expression values if TRUE (default). This results in violins being
-drawn for only clusters that contain at least 25% of cells expressing the gene of interest above background.
-If FALSE, uses unmodified expression profiles. This results in violins being drawn for all clusters, regardless
-of the proportion of cells that express the gene}
+\item{use_noise}{adds random noise to expression values if TRUE (default).
+This results in violins being drawn for only clusters that contain at least
+25% of cells expressing the gene of interest above background. If FALSE,
+uses unmodified expression profiles. This results in violins being drawn
+for all clusters, regardless of the proportion of cells that express the
+gene}
 
 \item{scale}{the scale for facet_grid}
 }
 \description{
-\code{construct_violin_plot} Returns a ggplot object of expression profiles for all clusters according
-to the input genes of interest. Colors and expression profiles of data used for this visualization are
-prepared in \code{\link{prepare_violin_data_colors}}.
+\code{construct_violin_plot} Returns a ggplot object of expression profiles
+for all clusters according to the input genes of interest. Colors and
+expression profiles of data used for this visualization are prepared in
+\code{\link{prepare_violin_data_colors}}.
 }
 \examples{
+\dontrun{
 construct_violin_plot(my_object = seurat_obj, genes_to_investigate = c("RHO", "PDE6A"),
 dendrogram_input = my_dendrogram, colors = c("red", "green", "orange"))
+}
 
 }

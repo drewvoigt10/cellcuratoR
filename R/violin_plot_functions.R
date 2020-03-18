@@ -20,7 +20,9 @@
 #' @import ggplot2
 #'
 #' @examples
+#' \dontrun{
 #' prepare_violin_data_colors(my_object = seurat_obj, genes_to_investigate = c("RHO", "PDE6A"), dendrogram_input = my_dendrogram, colors = c("red", "green", "orange"))
+#'}
 #'
 #' @export
 prepare_violin_data_colors <-
@@ -149,8 +151,10 @@ prepare_violin_data_colors <-
 #' @param scale the scale for facet_grid
 #'
 #' @examples
+#' \dontrun{
 #' construct_violin_plot(my_object = seurat_obj, genes_to_investigate = c("RHO", "PDE6A"),
 #' dendrogram_input = my_dendrogram, colors = c("red", "green", "orange"))
+#'}
 #'
 #' @export
 construct_violin_plot <- function(my_object, genes_to_investigate,

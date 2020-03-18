@@ -3,7 +3,7 @@
 
 <img align="right" src="www/cellcuratoR.png" width="231.2" height="267.3">
 
-With cellcuratoR, any Seurat-processed (version > 3.0.0) object can easily be converted into a format interpretable by the R-shiny reactive user interface for interactive, exploratory data analysis. This package allows bioinformaticians to interact with and share single-cell RNA sequencing data, facilitating generating violin plots, reclustering subsets of cells, and flexible differential expression analysis. The cellcuratoR package was used to create the freely-accessible Single-Cell Ocular Tissue Analysis (SCOTA) system, which is available at www.oculargeneexpression.org. 
+With cellcuratoR, any Seurat-processed (version > 3.0.0) object can easily be converted into a format interpretable by the R-shiny reactive user interface for interactive, exploratory data analysis. This package allows bioinformaticians to interact with and share single-cell RNA sequencing data, generate violin plots, recluster subsets of cells, and perform flexible differential expression analysis. The cellcuratoR package was used to create the freely-accessible Single-Cell Ocular Tissue Analysis (SCOTA) system, which is available at www.oculargeneexpression.org. 
 
 ## Installation
 
@@ -22,10 +22,15 @@ source("https://install-github.me/drewvoigt10/cellcuratoR")
 # An overview of the cellcuratoR package
 
 ## A. Data pre-processing. 
-cellcuratoR converts a Seurat-analyzed single-cell RNA sequencing dataset into a format interpretable by the R Shiny reactive user interface. For users new to Seurat, a guided analysis including basic quality control and clustering is available at: https://satijalab.org/seurat/v3.1/pbmc3k_tutorial.html. We have also included a basic data processing outline as supplemental file 1 (## Task: Update or hyperlink).  
+cellcuratoR converts a Seurat-analyzed single-cell RNA sequencing dataset into a format interpretable by the R Shiny reactive user interface. For users new to Seurat, a guided analysis including basic quality control and clustering is available at: https://satijalab.org/seurat/v3.1/pbmc3k_tutorial.html. We have also included a basic data processing outline in the export_shiny_object vignette (see (B) below).  
 
 ## B. Exporting Seurat-analyzed data to formats interpretable by cellcuratoR
-Once an RNA sequencing dataset has undergone quality control and clustering in Seurat, the data can be exported by the the export_seurat_object() function. A detailed vignette of this object is available by (## TASK: how to access vignette?). Briefly, the user should first create a directory (eg my_cellcuratoR_objects) in which to store exported data objects. The export_seurat_object() function requires the following basic arguments:
+Once an RNA sequencing dataset has undergone quality control and clustering in Seurat, the data can be exported by the the export_shiny_object() function. A detailed vignette of this object can be accessed with:
+```{r}
+library(cellcuratoR)
+vignette("export_shiny_object_vignette", package = "cellcuratoR")
+```
+Briefly, the user should first create a directory (eg my_cellcuratoR_objects) in which to store exported data objects. The export_shiny_object() function requires the following basic arguments:
 + seurat_object: the S4 Seurat object of interest.
 + final_cluster_column_namethe column name (characater string) in the meta.data that corresponds to the final cluster label of each cell. 
 + library_id_column_name: the column name (character string) in the meta.data that corresponds to the originating library of each cell. For canonical-correlation analyzed datasets, this is often the "orig.ident" column within the meta.data. 
@@ -74,7 +79,7 @@ In contrast, the user may also manually identify groups for differential express
 ![](demo/DE_2_GIF.gif)
 
 ### vii. Differential expression between different biological conditions
-The user may also perform differential expression between other binary identities corresponding to different biologically meaningful features that are identities in the meta.data. These features are identified in the export_seurat_object() function with the optional argument "additional_metadata_cols." For example, in this experiment, foveal and peripheral libraries were independently prepared. By selecting “Perform differential expression between region,” differential expression is performed between foveal and peripheral libraries for all cells selected in the group (in this case, glial cell populations). This feature is also compatible with the lasso selection tool.
+The user may also perform differential expression between other binary identities corresponding to different biologically meaningful features that are identities in the meta.data. These features are identified in the export_shiny_object() function with the optional argument "additional_metadata_cols." For example, in this experiment, foveal and peripheral libraries were independently prepared. By selecting “Perform differential expression between region,” differential expression is performed between foveal and peripheral libraries for all cells selected in the group (in this case, glial cell populations). This feature is also compatible with the lasso selection tool.
 
 ![](demo/DE_3_GIF.gif)
 

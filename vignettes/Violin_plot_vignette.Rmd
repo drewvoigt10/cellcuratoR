@@ -3,8 +3,8 @@ title: "Generating Violin Plots"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Generating-Violin-Plots}
-  %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
   chunk_output_type: console
 ---
@@ -23,7 +23,7 @@ We will begin by exporting a previously processed Seurat object into SCOTA-reada
 library(Seurat)
 library(tidyverse)
 library(patchwork)
-library(SCOTA)
+library(cellcuratoR)
 
 head(pbmc_small@meta.data)
 celltype <- plyr::mapvalues(x = pbmc_small@meta.data$RNA_snn_res.1, 
@@ -34,7 +34,7 @@ pbmc_small@meta.data <- data.frame(pbmc_small@meta.data, celltype)
 export_shiny_object(seurat_object = pbmc_small, 
                     final_cluster_column_name = "RNA_snn_res.1",
                     library_id_column_name = "orig.ident",
-                    cell_classification_column_name = "celltype",
+                    classification_column_name = "celltype",
                     create_dendrogram = TRUE,
                     custom_cluster_colors = FALSE,
                     custom_library_colors = FALSE,

@@ -2,7 +2,7 @@
 % Please edit documentation in R/differential_expression_functions.R
 \name{find_dge_variables}
 \alias{find_dge_variables}
-\title{Find differentially expressed gene variables of interest}
+\title{Find genes that meet selected differential expression thresholds}
 \usage{
 find_dge_variables(object, ident.1, ident.2, my_logfc_threshold,
   my_minpct_threshold)
@@ -38,6 +38,10 @@ progress bar to display within the shiny app indiciating the progress of the
 FindMarkers() function.
 }
 \examples{
-find_dge_variables(seurat_obj, ident.1 = 2, ident.2 = c(3,4), my_logfc_threshold = 0.25, my_minpct_threshold = 0.5)
-find_dge_variables(seurat_obj, ident.1 = 3, my_logfc_threshold = 0.5, my_minpct_threshold = 0.1)
+\dontrun{
+find_dge_variables(seurat_obj, ident.1 = 2, ident.2 = c(3,4),
+my_logfc_threshold = 0.25, my_minpct_threshold = 0.5)
+find_dge_variables(seurat_obj, ident.1 = 3, my_logfc_threshold = 0.5,
+my_minpct_threshold = 0.1)
+}
 }

@@ -12,8 +12,9 @@
 #' \dontrun{
 #' c(2,3,4,5) %!in% c(3,4)
 #'}
-"%!in%" <- function(x, y) ! ("%in%"(x, y))
-
+"%!in%" <- function(x, y) {
+  ! (x %in% y)
+}
 
 
 #' Emulation of gg colors
@@ -31,8 +32,8 @@
 
 
 gg_color_hue <- function(n) {
-  hues <- seq(15, 375, length = n + 1)
-  hcl(h = hues, l = 65, c = 100)[1:n]
+  color_index <- seq(15, 375, length = n + 1)
+  hcl(h = color_index, l = 75, c = 100)[1:n]
 }
 
 #' Export seurat-based shiny object
@@ -42,7 +43,7 @@ gg_color_hue <- function(n) {
 #' shiny application. This function aims to help researchers shiny-ize their
 #' own datasets for local interactive analysis.
 #'
-#' @param seurat_objectIinput S4 Seurat object.
+#' @param seurat_object Input S4 Seurat object.
 #'
 #' @param final_cluster_column_name The column name within the meta.data
 #' (character string) that corresponds to the final cluster label.
@@ -90,7 +91,8 @@ gg_color_hue <- function(n) {
 #'
 #' @examples
 #' \dontrun{
-#' celltype <- plyr::mapvalues(x = pbmc_small@meta.data$RNA_snn_res.1,from = seq(from = 0, to = 2), to = c("celltype_A", "celltype_B", "celltype_C"))
+#' celltype <- plyr::mapvalues(x = pbmc_small@meta.data$RNA_snn_res.1,
+#' from = seq(from = 0, to = 2), to = c("celltype_A", "celltype_B", "celltype_C"))
 #' pbmc_small@meta.data <- data.frame(pbmc_small@meta.data, celltype)
 #' pbmc_small@meta.data$celltype <- celltype
 #' export_shiny_object(seurat_object = pbmc_small,
@@ -265,7 +267,7 @@ export_shiny_object <- function(seurat_object,
 
       enriched_genes <- de_genes %>%
         rownames_to_column("gene") %>%
-        filter(avg_logFC > 0) %>%
+        dplyr::filter(avg_logFC > 0) %>%
         arrange(desc(avg_logFC))
 
       if (nrow(enriched_genes) > 100) {

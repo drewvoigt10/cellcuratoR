@@ -11,6 +11,8 @@ export_shiny_object(seurat_object, final_cluster_column_name,
   additional_metadata_cols = NULL, export_data_path)
 }
 \arguments{
+\item{seurat_object}{Input S4 Seurat object.}
+
 \item{final_cluster_column_name}{The column name within the meta.data
 (character string) that corresponds to the final cluster label.}
 
@@ -54,8 +56,6 @@ interface. Columns must be binary factors. Deafults to NULL.}
 should be exported. Of note, all exported data objects for shiny should be
 stored in the same directory in order to be accessible at the same time within
 the shiny application.}
-
-\item{seurat_objectIinput}{S4 Seurat object.}
 }
 \description{
 \code{export_shiny_object} returns a stripped down seurat object, a
@@ -65,7 +65,8 @@ own datasets for local interactive analysis.
 }
 \examples{
 \dontrun{
-celltype <- plyr::mapvalues(x = pbmc_small@meta.data$RNA_snn_res.1,from = seq(from = 0, to = 2), to = c("celltype_A", "celltype_B", "celltype_C"))
+celltype <- plyr::mapvalues(x = pbmc_small@meta.data$RNA_snn_res.1,
+from = seq(from = 0, to = 2), to = c("celltype_A", "celltype_B", "celltype_C"))
 pbmc_small@meta.data <- data.frame(pbmc_small@meta.data, celltype)
 pbmc_small@meta.data$celltype <- celltype
 export_shiny_object(seurat_object = pbmc_small,
