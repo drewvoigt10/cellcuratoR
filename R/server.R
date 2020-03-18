@@ -11,7 +11,6 @@
 #' @importFrom DT renderDataTable
 #' @importFrom magrittr "%>%"
 #' @importFrom grDevices hcl
-#' @importFrom methods is new
 #' @importFrom stats hclust rnorm
 #' @importFrom Seurat Idents DimPlot FeaturePlot GetAssayData NormalizeData FindVariableFeatures WhichCells RunUMAP RunTSNE VariableFeatures ScaleData RunPCA FindNeighbors Tool FindClusters FindMarkers DefaultAssay FetchData HoverLocator AverageExpression
 #' @importFrom ggdendro dendro_data segment label
