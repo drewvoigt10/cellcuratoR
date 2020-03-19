@@ -12,7 +12,7 @@ Description: cellcuratoR is a package for sharing interactive single-cell gene e
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1.9000
+RoxygenNote: 7.1.0
 biocViews:
 Imports: colorspace (>= 1.4.1),
 	DT (>= 0.8),
@@ -22,7 +22,6 @@ Imports: colorspace (>= 1.4.1),
 	ggrepel (>= 0.8.1),
 	here (>= 0.1),
 	magrittr (>= 1.5),
-	methods (>= 3.6.0),
 	multtest (>= 2.4.0), 
 	patchwork (>= 0.0.1),
 	plotly (>= 4.9.0),
