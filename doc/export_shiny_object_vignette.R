@@ -1,27 +1,10 @@
----
-title: "export_shiny_object_vignette"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{export_shiny_object_vignette}
-  %\VignetteEncoding{UTF-8}
-  %\VignetteEngine{knitr::rmarkdown}
-editor_options: 
-  chunk_output_type: console
----
-
-```{r, include = FALSE}
+## ---- include = FALSE----------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-```
 
-## Overview
-This vignette will walk through the exportation of a processed seurat object that is compatible with the cellcuratoR shiny visualization system. Compatible S4 Seurat input objects should be supplied by the user that have either (A) been processed with Seuart (version 3) or (B) been updated to a version 3 Seurat object with the function UpdateSeuratObject(). Further, within the meta.data of the Seurat object, the user should have columns corresponding to a final cluster designation, a library-id, and a cell type classification, as walked through in this tutorial.
-
-We will walk through the exportation of a stimulated vs control pbmc dataset freely available from Seurat. We will use the ifnb data, in which peripheral blood mononuclear cells were divided into stimulated and control groups. For further details, see https://satijalab.org/seurat/v3.1/immune_alignment.html. First, we will download the ifnb dataset using the helpful SeuratData package.
-
-```{r}
+## ------------------------------------------------------------------------
 library(cellcuratoR)
 library(Seurat)
 library(tidyverse)
@@ -35,14 +18,11 @@ library(SeuratData)
 
 InstallData("ifnb") 
 data("ifnb")
-```
 
-```{r}
+## ------------------------------------------------------------------------
 head(ifnb@meta.data)
-```
 
-We will perform a basic integration and clustering analysis, as outlined by the Seurat team.
-```{r}
+## ------------------------------------------------------------------------
 ifnb.list <- SplitObject(ifnb, split.by = "stim")
 
 ifnb.list <- lapply(X = ifnb.list, FUN = function(x) {
@@ -75,19 +55,14 @@ immune.combined@meta.data$celltype <- celltype
 # be performed between unstimulated and stimulated samples. Treatment must be a binary factor. 
 treatment <- as.factor(immune.combined@meta.data$orig.ident)
 immune.combined@meta.data <- data.frame(immune.combined@meta.data, treatment)
-```
 
-
-Before interacting with the data, we must export the processed seurat object in a format interpretable by Shiny. First, we create a directory to organize all of our exported cellcuratoR objects:
-```{r}
+## ------------------------------------------------------------------------
 ## consider changing filepath to ~/Desktop or other directory that is easier to navigate to
 my_filepath <- file.path(find.package("cellcuratoR"))
 dir.create(file.path(my_filepath, "my_cellcuratoR_objects/"))
 
-```
 
-Next, we export our processed Seurat object into this newly created directory with the export_shiny_object() function.
-```{r message = FALSE, warning = FALSE}
+## ----message = FALSE, warning = FALSE------------------------------------
 export_shiny_object(seurat_object = immune.combined, 
                     final_cluster_column_name = "seurat_clusters",
                     library_id_column_name = "orig.ident",
@@ -98,17 +73,8 @@ export_shiny_object(seurat_object = immune.combined,
                     additional_metadata_cols = c("treatment"), # allows for dge between treatment groups
                     export_data_path = file.path(my_filepath, "my_cellcuratoR_objects/"))
 ## consider changing filepath to ~/Desktop or other directory that is easier to navigate to
-```
 
-The directory structure of the exported dataset is as follows:
-```
-|-- infb_shiny
-|   |--seurat_obj.RData
-|   |--seurat_obj_big.RData
-```
-
-Once exported, we can now launch the cellcuratoR app and interact with the dataset. Upon launching the cellcuratoR shiny interface, we click the "Select Seurat Object Directory" button and navigate to our newly created directory, "~/Desktop/my_cellcurator_objects/." Importantly, we do NOT navigate to the directory of the individual dataset (eg, do NOT navigate to "~/Desktop/my_cellcurator_objects/infb_shiny/"). Then, we can load our dataset with the "which dataset should be loaded?" dropdown and initiate exploratory data analysis. 
-```{r}
+## ------------------------------------------------------------------------
 print(paste0("exporting data to: ", my_filepath, "my_cellcuratoR_objects/"))
 # Launch the app with the following command (commented out for R-markdown)
 # cellcuratoR::launchApp()
@@ -117,4 +83,4 @@ print(paste0("exporting data to: ", my_filepath, "my_cellcuratoR_objects/"))
 # 2. Select the "infb_shiny" dataset from the "which dataset should be loaded?" dropdown
 # 3. Interactively explore data!
 
-```
+
