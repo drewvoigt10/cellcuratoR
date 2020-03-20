@@ -74,7 +74,10 @@ immune.combined@meta.data <- data.frame(immune.combined@meta.data, treatment)
 
 Before interacting with the data, we must export the processed seurat object in a format interpretable by Shiny. First, we create a directory to organize all of our exported cellcuratoR objects:
 ```{r}
-dir.create("~/Desktop/my_cellcuratoR_objects/")
+## consider changing filepath to ~/Desktop or other directory that is easier to navigate to
+my_filepath <- file.path(find.package("cellcuratoR"))
+dir.create(file.path(my_filepath, "my_cellcuratoR_objects/"))
+
 ```
 
 Next, we export our processed Seurat object into this newly created directory with the export_shiny_object() function.
@@ -87,7 +90,8 @@ export_shiny_object(seurat_object = immune.combined,
                     custom_cluster_colors = FALSE,
                     custom_library_colors = FALSE,
                     additional_metadata_cols = c("treatment"), # allows for dge between treatment groups
-                    export_data_path = "~/Desktop/my_cellcuratorR_objects/infb_shiny/")
+                    export_data_path = file.path(my_filepath, "my_cellcuratoR_objects/"))
+## consider changing filepath to ~/Desktop or other directory that is easier to navigate to
 ```
 
 The directory structure of the exported dataset is as follows:
@@ -99,7 +103,7 @@ The directory structure of the exported dataset is as follows:
 
 Once exported, we can now launch the cellcuratoR app and interact with the dataset. Upon launching the cellcuratoR shiny interface, we click the "Select Seurat Object Directory" button and navigate to our newly created directory, "~/Desktop/my_cellcurator_objects/." Importantly, we do NOT navigate to the directory of the individual dataset (eg, do NOT navigate to "~/Desktop/my_cellcurator_objects/infb_shiny/"). Then, we can load our dataset with the "which dataset should be loaded?" dropdown and initiate exploratory data analysis. 
 ```{r}
-
+print(paste0("exporting data to: ", my_filepath, "my_cellcuratoR_objects/"))
 # Launch the app with the following command (commented out for R-markdown)
 # cellcuratoR::launchApp()
 

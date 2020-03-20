@@ -66,7 +66,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
     # Load the data from the selected dataset (UI = dataSelect, choices = myProjects())
     req(input$dataset)
     req(input$directory)
-    load(paste0(as.character(parseDirPath(volumes, input$directory)), "/", input$dataset, "/", "seurat_obj.RData"))
+    load(file.path(as.character(parseDirPath(volumes, input$directory)),  input$dataset, "seurat_obj.RData"))
     seurat_obj
   })
 
@@ -376,7 +376,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
     # In order to keep the app fast, this larger seurat object (which is automatically created by the export seurat function) is
     # only loaded in if the user requests to recluster the data.
     req(input$dataset)
-    load(paste0(as.character(parseDirPath(volumes, input$directory)), "/", input$dataset, "/", "seurat_obj_big.RData"))
+    load(file.path(as.character(parseDirPath(volumes, input$directory)), input$dataset, "seurat_obj_big.RData"))
     seurat_obj_big
   })
 

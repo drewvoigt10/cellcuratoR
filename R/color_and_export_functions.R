@@ -119,7 +119,9 @@ export_shiny_object <- function(seurat_object,
   DefaultAssay(seurat_object) <- "RNA" # default assay of
                                        # object must be RNA
   # create export directory
-  dir.create(export_data_path, recursive = TRUE)
+  if (dir.exists(exists(export_data_path)) == FALSE) {
+    dir.create(export_data_path, recursive = TRUE)
+  }
 
   #############################################
   ##### strip off data from seurat object #####

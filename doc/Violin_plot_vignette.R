@@ -5,7 +5,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(Seurat)
 library(tidyverse)
 library(patchwork)
-library(SCOTA)
+library(cellcuratoR)
 
 head(pbmc_small@meta.data)
 celltype <- plyr::mapvalues(x = pbmc_small@meta.data$RNA_snn_res.1, 
@@ -16,7 +16,7 @@ pbmc_small@meta.data <- data.frame(pbmc_small@meta.data, celltype)
 export_shiny_object(seurat_object = pbmc_small, 
                     final_cluster_column_name = "RNA_snn_res.1",
                     library_id_column_name = "orig.ident",
-                    cell_classification_column_name = "celltype",
+                    classification_column_name = "celltype",
                     create_dendrogram = TRUE,
                     custom_cluster_colors = FALSE,
                     custom_library_colors = FALSE,
@@ -41,8 +41,6 @@ my_violin_data <- prepare_violin_data_colors(my_object = seurat_obj,
 ## ------------------------------------------------------------------------
 theme_shiny <- function() {
       theme(
-        # Wherever you modifying both x and y elements, you can use the
-        # higher element.
         axis.title = element_blank(),
         axis.text = element_blank(),
         axis.ticks = element_blank(),
