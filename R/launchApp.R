@@ -4,12 +4,12 @@
 #'
 #' @return shiny application object
 #'
-#' @example
+#' @examples
 #' \dontrun{
 #' launchApp()
 #' }
 #'
-#' @import shiny
+#' @importFrom shiny shinyApp
 
 
 # wrapper for shinyApp()

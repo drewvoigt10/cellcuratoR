@@ -14,3 +14,8 @@ x \%not_in\% y
 \description{
 Opposite of in
 }
+\examples{
+\dontrun{
+c(2,3,4,5) \%not_in\% c(3,4)
+}
+}

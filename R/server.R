@@ -16,7 +16,9 @@
 #' @importFrom ggdendro dendro_data segment label
 #' @importFrom plotly ggplotly renderPlotly subplot plot_ly layout event_data
 #' @importFrom patchwork plot_layout
-#' @importFrom shiny Progress validate reactive renderText renderUI req validate conditionalPanel selectInput renderImage actionButton selectizeInput updateSelectizeInput downloadButton eventReactive checkboxGroupInput radioButtons sliderInput withProgress
+#' @importFrom shiny Progress validate reactive renderText renderUI req validate conditionalPanel selectInput renderImage actionButton selectizeInput
+#' @importFrom shiny updateSelectizeInput downloadButton eventReactive checkboxGroupInput radioButtons sliderInput withProgress shinyServer icon plotOutput
+#' @importFrom shiny strong
 #' @importFrom tibble as_tibble rownames_to_column
 #' @importFrom rlang %||% UQ
 #' @importFrom shinyFiles shinyDirChoose parseDirPath getVolumes

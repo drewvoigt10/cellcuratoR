@@ -12,3 +12,9 @@ shiny application object
 \description{
 launches the cellcuratoR shiny app
 }
+\examples{
+\dontrun{
+launchApp()
+}
+
+}

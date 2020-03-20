@@ -14,3 +14,8 @@ gg_color_hue(n)
 Adapted from stackoverflow John Colby
 https://stackoverflow.com/questions/8197559/emulate-ggplot2-default-color-palette
 }
+\examples{
+\dontrun{
+gg_color_hue(10)
+}
+}

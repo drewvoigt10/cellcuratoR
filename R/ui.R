@@ -2,7 +2,7 @@
 #'
 #' @export
 #'
-#' @import shiny fluidPage fluidRow column uiOutput tabPanel textOutput h1 h2 h3 h4 h5 br p a imageOutput
+#' @importFrom shiny fluidPage fluidRow column uiOutput tabPanel textOutput h1 h2 h3 h4 h5 br p a imageOutput
 #' @importFrom plotly plotlyOutput
 #' @importFrom shinydashboard dashboardSidebar sidebarMenu menuItem dashboardBody tabItems tabItem tabBox box dashboardPage dashboardHeader
 #' @importFrom shinycssloaders withSpinner
