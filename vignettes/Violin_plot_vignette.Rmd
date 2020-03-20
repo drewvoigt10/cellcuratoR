@@ -19,7 +19,7 @@ This vignette will overview how to create violin plots that depict expression le
 This visualization utilizes dendrograms that communicate how each cluster of cells is related. Such dendrograms are created by default in the export_seurat_object() function.
  
 We will begin by exporting a previously processed Seurat object into SCOTA-readable files for interactive visualization, as outlined in more detail in theExport Seurat Object Vignette. 
-```{r message = FALSE, warning = FALSE}
+```{r export_obj, message = FALSE, warning = FALSE}
 library(Seurat)
 library(tidyverse)
 library(patchwork)
@@ -48,7 +48,7 @@ export_shiny_object(seurat_object = pbmc_small,
 ```
 
 Creating violin plots are broken into two steps. The first involves generating the data (expression values for each cluster) and the colors used for the violin plots. 
-```{r}
+```{r violin_data}
 load(file.path(my_filepath, "pbmc_cellcuratoR_export", "seurat_obj.RData")) # Loads the seurat_obj, which renames several columns in the meta.data
                                                     # with standardized names for use in the Shiny application. 
 
@@ -61,7 +61,7 @@ my_violin_data <- prepare_violin_data_colors(my_object = seurat_obj,
 ```
 
 Generated data can be converted into violin plots with the contruct_violin_plot function. 
-```{r}
+```{r violin_plots_1}
 theme_shiny <- function() {
       theme(
         axis.title = element_blank(),
@@ -117,7 +117,7 @@ p_dendrogram +
 ```
 
 Colors can be manually changed easily. 
-```{r}
+```{r violin_plots_man_colors}
 p_violins <-
   construct_violin_plot(
     my_object = seurat_obj,
@@ -136,7 +136,7 @@ p_dendrogram +
 ```
 
 By default, the VlnPlot() function within Seurat adds a small amount of noise ot the expression profiles of each cell. This changes how the violin geoms are rendered, and results in violins not being rendered for clusters that have less than 25% of cells expressing the gene of interest. Changing the add_noise parameter to FALSE results in violins being drawn for all clusters, as shown here.
-```{r}
+```{r violin_plots_no_noise}
 p_violins <-
   construct_violin_plot(
     my_object = seurat_obj,
