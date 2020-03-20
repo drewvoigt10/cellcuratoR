@@ -1,6 +1,6 @@
 #' Opposite of in
 #'
-#' \code{%!in%} returns a vector of the positions of the first vector that are
+#' \code{%not_in%} returns a vector of the positions of the first vector that are
 #' not in the second vector. Adapted from stackoverflow Sacha Epskamp
 #' https://stackoverflow.com/questions/5831794/opposite-of-in
 #'
@@ -8,11 +8,11 @@
 #'
 #' @param y The second vector.
 #'
-#' @example
+#' @examples
 #' \dontrun{
-#' c(2,3,4,5) %!in% c(3,4)
-#'}
-"%!in%" <- function(x, y) {
+#' c(2,3,4,5) %not_in% c(3,4)
+#' }
+"%not_in%" <- function(x, y) {
   ! (x %in% y)
 }
 
@@ -25,10 +25,10 @@
 
 #' @param n The number of colors to return.
 #'
-#' @example
+#' @examples
 #' \dontrun{
 #' gg_color_hue(10)
-#'}
+#' }
 
 
 gg_color_hue <- function(n) {
@@ -134,9 +134,9 @@ export_shiny_object <- function(seurat_object,
   my_active_assay <- seurat_object@active.assay
   my_active_ident <- seurat_object@active.ident
 
-  if (final_cluster_column_name %!in% colnames(my_metadata) |
-     library_id_column_name %!in% colnames(my_metadata) |
-     classification_column_name %!in% colnames(my_metadata)) {
+  if (final_cluster_column_name %not_in% colnames(my_metadata) |
+     library_id_column_name %not_in% colnames(my_metadata) |
+     classification_column_name %not_in% colnames(my_metadata)) {
 
     name_vector <- c(final_cluster_column_name,
                     library_id_column_name,
@@ -144,7 +144,7 @@ export_shiny_object <- function(seurat_object,
 
     stop(paste(name_vector[
       which(
-        name_vector %!in% colnames(my_metadata)
+        name_vector %not_in% colnames(my_metadata)
         )
       ],
       "not a column name in the meta.data",
