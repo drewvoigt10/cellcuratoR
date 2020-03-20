@@ -25,6 +25,12 @@ We will walk through the exportation of a stimulated vs control pbmc dataset fre
 library(cellcuratoR)
 library(Seurat)
 library(tidyverse)
+
+if(!requireNamespace("SeuratData", quietly = TRUE)){
+  stop("Package \"SeuratData\" needed for this vignette to work. Please install it.",
+      call. = FALSE)
+}
+
 library(SeuratData)
 
 InstallData("ifnb") 
