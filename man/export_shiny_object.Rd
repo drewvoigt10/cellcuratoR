@@ -4,11 +4,18 @@
 \alias{export_shiny_object}
 \title{Export seurat-based shiny object}
 \usage{
-export_shiny_object(seurat_object, final_cluster_column_name,
-  library_id_column_name, classification_column_name,
-  create_dendrogram = TRUE, replacement_dendrogram = NULL,
-  custom_cluster_colors = FALSE, custom_library_colors = FALSE,
-  additional_metadata_cols = NULL, export_data_path)
+export_shiny_object(
+  seurat_object,
+  final_cluster_column_name,
+  library_id_column_name,
+  classification_column_name,
+  create_dendrogram = TRUE,
+  replacement_dendrogram = NULL,
+  custom_cluster_colors = FALSE,
+  custom_library_colors = FALSE,
+  additional_metadata_cols = NULL,
+  export_data_path
+)
 }
 \arguments{
 \item{seurat_object}{Input S4 Seurat object.}

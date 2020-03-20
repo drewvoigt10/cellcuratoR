@@ -4,8 +4,14 @@
 \alias{construct_violin_plot}
 \title{Generate violin plots of prepared data}
 \usage{
-construct_violin_plot(my_object, genes_to_investigate, dendrogram_input,
-  colors, use_noise = TRUE, scale = "free_x")
+construct_violin_plot(
+  my_object,
+  genes_to_investigate,
+  dendrogram_input,
+  colors,
+  use_noise = TRUE,
+  scale = "free_x"
+)
 }
 \arguments{
 \item{my_object}{S4 object from which expression data should be extracted.

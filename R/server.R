@@ -20,6 +20,7 @@
 #' @importFrom tibble as_tibble rownames_to_column
 #' @importFrom rlang %||% UQ
 #' @importFrom shinyFiles shinyDirChoose parseDirPath getVolumes
+#' @importFrom methods is new
 
 shinyAppServer <- shinyServer(function(session, input, output) {
   ### Chunk 1: select your dataset and load in associated data objects/RDS files
