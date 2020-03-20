@@ -87,7 +87,7 @@ dir.create(file.path(my_filepath, "my_cellcuratoR_objects/"))
 ```
 
 Next, we export our processed Seurat object into this newly created directory with the export_shiny_object() function.
-```{r export message = FALSE, warning = FALSE}
+```{r export_obj, message = FALSE, warning = FALSE}
 export_shiny_object(seurat_object = immune.combined, 
                     final_cluster_column_name = "seurat_clusters",
                     library_id_column_name = "orig.ident",
