@@ -11,10 +11,10 @@ With cellcuratoR, any Seurat-processed (version > 3.0.0) object can easily be co
 devtools::install_github("drewvoigt10/cellcuratoR")
 ```
 
-...or...
+If you would like to install the vignettes, which will download the SeuratData ifnb dataset, specify this in install_github argument with:
 
 ``` r
-source("https://install-github.me/drewvoigt10/cellcuratoR")
+devtools::install_github("drewvoigt10/cellcuratoR", build_vignettes = TRUE)
 ```
 
 ---
