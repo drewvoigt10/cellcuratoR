@@ -960,7 +960,6 @@ shinyAppServer <- shinyServer(function(session, input, output) {
                         cols = c("#F8766D", "#00BFC4", "darkgrey"))
     } else {
       Idents(loaded_data) <- as.character(input$DE_identity)
-      Idents(loaded_data) <- "region"
       binary_idents <- levels(loaded_data@active.ident)
       plot_label <- ifelse(loaded_data$de_group == "Group_1", binary_idents[1],
                            ifelse(loaded_data$de_group == "Group_2", binary_idents[2], 'not_selected'))
