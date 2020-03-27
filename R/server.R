@@ -242,6 +242,27 @@ shinyAppServer <- shinyServer(function(session, input, output) {
 
   })
 
+  # https://stackoverflow.com/questions/52039435/force-selectize-js-only-to-show-options-that-start-with-user-input-in-shiny
+  getScore <- function() {
+    # the updateSelectizeInput for displaying genes in the heatmaps and violin plots
+    # is finicky for genes with short names. For example, when trying to querry expression
+    # of the gene C2, hundreds of genes have C2 in their name. Therefore, I found this
+    # stack-overflow post that allows one to only return items that start with the input
+    # string
+    return(I("function(search)
+              {
+               var score = this.getScoreFunction(search);
+               return function(item)
+                      {
+                        return item.label
+                        .toLowerCase()
+                        .startsWith(search.toLowerCase()) ? 1 : 0;
+                      };
+              }"
+    )
+    )
+  }
+
   output$featurePlotHelper <- renderUI({
     # The helper UI for the heatmap in which the user can select which gene should be heat-map-ified
     conditionalPanel(
@@ -258,10 +279,17 @@ shinyAppServer <- shinyServer(function(session, input, output) {
   observeEvent(input$dataset, {
     choicesVec <- all_genes()$genes
     updateSelectizeInput(session, "plot_gene_heatmap",
-                         choices = choicesVec,
+                         choices = sort(choicesVec),
                          selected = NULL,
-                         server=TRUE)
+                         server=TRUE,
+                         options = list(dropdownParent = 'body',
+                                        openOnFocus = FALSE,
+                                        items = c(),
+                                        score = getScore()
+                         )
+    )
   })
+
 
   ### Chunk 3: Other visualizations (violin, recluster, DE) (tabset 2)
   my_violin_object <- reactive({
@@ -346,7 +374,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
       selectizeInput('violin_genes',
                      label = h3("Violin genes"),
                      choices = NULL,
-                     multiple=TRUE,
+                     multiple= TRUE,
                      options= list(maxOptions = 50)
       )
 
@@ -357,9 +385,15 @@ shinyAppServer <- shinyServer(function(session, input, output) {
   observeEvent(input$dataset, {
     choicesVec <- all_genes()$genes
     updateSelectizeInput(session, "violin_genes",
-                         choices = choicesVec,
+                         choices = sort(choicesVec),
                          selected = NULL,
-                         server=TRUE)
+                         server = TRUE,
+                         options = list(dropdownParent = 'body',
+                                        openOnFocus = FALSE,
+                                        items = c(),
+                                        score = getScore()
+                         )
+    )
   })
 
   output$violinDownload <- renderUI({
@@ -577,9 +611,15 @@ shinyAppServer <- shinyServer(function(session, input, output) {
   observeEvent(input$dataset, {
     choicesVec <- all_genes()$genes
     updateSelectizeInput(session, "reduction_plot_gene_heatmap",
-                         choices = choicesVec,
+                         choices = sort(choicesVec),
                          selected = NULL,
-                         server=TRUE)
+                         server=TRUE,
+                         options = list(dropdownParent = 'body',
+                                        openOnFocus = FALSE,
+                                        items = c(),
+                                        score = getScore()
+                         )
+    )
   })
 
   ######################
