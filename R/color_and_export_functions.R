@@ -371,6 +371,6 @@ export_shiny_object <- function(seurat_object,
   #####  save created objects for shiny   #####
   #############################################
 
-  save(seurat_obj, file = paste0(export_data_path, "seurat_obj.RData"))
-  save(seurat_obj_big, file = paste0(export_data_path, "seurat_obj_big.RData"))
+  save(seurat_obj, file = paste0(export_data_path, "/seurat_obj.RData"))
+  save(seurat_obj_big, file = paste0(export_data_path, "/seurat_obj_big.RData"))
 }
