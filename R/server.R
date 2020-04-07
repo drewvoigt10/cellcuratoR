@@ -942,7 +942,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
       markers <- data.frame()
       for(i in 1:n){
         dge.chunk <- FindMarkers(object = loaded_data, ident.1 = "Group_1", ident.2 = "Group_2",
-                                 my_logfc_threshold = input$logFC_threshold, my_minpct_threshold = input$min_pct_threshold,
+                                 logfc.threshold = input$logFC_threshold, min.pct = input$min_pct_threshold,
                                  features = variable_chunks[[i]]) %>% tibble::rownames_to_column("gene")
         markers <- rbind(markers, dge.chunk)
         incProgress(1/n, detail = paste(i*(100/n), "% of genes"))
