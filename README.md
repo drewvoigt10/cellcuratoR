@@ -50,7 +50,7 @@ cellcuratoR::launchApp()
 Interactive analysis commences by selecting a dataset and exploring visualizations outlined in the following sections. 
 
 ### i. Reading in a dataset
-To access and interact with the single-cell expression data, the user is prompted to click the "Select Seurat object directory" button and navigate to the directory of the exported Seurat objects (eg my_cellcuratoR_objects). **Importantly**, the user should **NOT** navigate to the directory each individual directory (eg my_dataset1). The bottom "content" window previews the contents of the selected directory, and should include a folder for each dataset of interest. 
+To access and interact with the single-cell expression data, the user is prompted to click the "Select Seurat object directory" button and navigate to the directory of the exported Seurat objects (eg my_cellcuratoR_objects). **Importantly**, the user should **NOT** navigate to the directory each individual directory (eg my_dataset1). The "content" window previews the contents of the selected directory, and should include a folder for each dataset of interest. 
 
 Next, the user can load a dataset with the "which dataset should be loaded?" dropdown. Upon selection of a dataset, the interactive dimesionality reduction plot in the first tab window will be displayed. Hovering over data points in plot communicates final cluster label, barcode, originating library, and cell type classification. Regions of the plot can be visualized in more detail with the zoom functionality. 
 
@@ -86,7 +86,7 @@ The user may also perform differential expression between other binary identitie
 
 ![](demo/DE_3_GIF.gif)
 
-## E. Downloading cellrangeR compatioble data objects from SCOTA (www.oculargeneexpression.org)
+## E. Downloading cellrangeR compatioble data objects from Spectacle (www.oculargeneexpression.org)
 Task TBD.
 
 ## F. Citation
