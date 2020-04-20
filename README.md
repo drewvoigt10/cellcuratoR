@@ -3,19 +3,22 @@
 
 <img align="right" src="www/cellcuratoR.png" width="231.2" height="267.3">
 
-With cellcuratoR, any Seurat-processed (version > 3.0.0) object can easily be converted into a format interpretable by the R-shiny reactive user interface for interactive, exploratory data analysis. This package allows bioinformaticians to interact with and share single-cell RNA sequencing data, generate violin plots, recluster subsets of cells, and perform flexible differential expression analysis. The cellcuratoR package was used to create the freely-accessible Single-Cell Ocular Tissue Analysis (SCOTA) system, which is available at www.oculargeneexpression.org. 
+With cellcuratoR, any Seurat-processed (version > 3.0.0) object can easily be converted into a format interpretable by the R-shiny reactive user interface for interactive, exploratory data analysis. This package allows bioinformaticians to interact with and share single-cell RNA sequencing data, generate violin plots, recluster subsets of cells, and perform flexible differential expression analysis. The cellcuratoR package was used to create the freely-accessible Spectacle system for interactive analysis of ocular single-cell RNA sequencing data, which is available at www.OcularGeneExpression.org. 
 
 ## Installation
 
 ``` r
 devtools::install_github("drewvoigt10/cellcuratoR")
 ```
+Note: occasionally due to package dependency misaligment, R packages which cellcuratoR depends on do not properly install. If installation exits with `Error: Dependency package(s) "missing_package_name" not available` we suggest that one first attempts to install the missing packages manually via `install.packages("missing_package_name"")`.
+
 
 If you would like to install the vignettes, which will download the SeuratData ifnb dataset, specify this in install_github argument with:
 
 ``` r
 devtools::install_github("drewvoigt10/cellcuratoR", build_vignettes = TRUE)
 ```
+Note that installing the vignette may take an additional 10-20 minutes due to downloading a large example dataset and exporting the dataset with the `export_shiny_object()` function. 
 
 ---
 
@@ -32,7 +35,7 @@ vignette("export_shiny_object_vignette", package = "cellcuratoR")
 ```
 Briefly, the user should first create a directory (eg my_cellcuratoR_objects) in which to store exported data objects. The export_shiny_object() function requires the following basic arguments:
 + seurat_object: the S4 Seurat object of interest.
-+ final_cluster_column_namethe column name (characater string) in the meta.data that corresponds to the final cluster label of each cell. 
++ final_cluster_column_name: the column name (character string) in the meta.data that corresponds to the final cluster label of each cell. 
 + library_id_column_name: the column name (character string) in the meta.data that corresponds to the originating library of each cell. For canonical-correlation analyzed datasets, this is often the "orig.ident" column within the meta.data. 
 + classification_column_name: the column name (character string) in the meta.data that corresponds to the classified cell type of interest. If cell type classification has not occured, the column name (character string) in the meta.data that corresponds to cluster number should be provided. 
 + export_data_path: a datapath (in the form of a character string) where the Seurat object can be exported (eg my_cellcuratoR_objects/my_dataset1/)
@@ -47,7 +50,7 @@ cellcuratoR::launchApp()
 Interactive analysis commences by selecting a dataset and exploring visualizations outlined in the following sections. 
 
 ### i. Reading in a dataset
-To access and interact with the single-cell expression data, the user is prompted to click the "Select Seurat object directory" button and navigate to the directory of the exported Seurat objects (eg my_cellcuratoR_objects). Importantly, the user should NOT navigate to the directory each individual directory (eg my_dataset1). The bottom "content" window previews the contents of the selected directory, and should include a folder for each dataset of interest. 
+To access and interact with the single-cell expression data, the user is prompted to click the "Select Seurat object directory" button and navigate to the directory of the exported Seurat objects (eg my_cellcuratoR_objects). **Importantly**, the user should **NOT** navigate to the directory each individual directory (eg my_dataset1). The bottom "content" window previews the contents of the selected directory, and should include a folder for each dataset of interest. 
 
 Next, the user can load a dataset with the "which dataset should be loaded?" dropdown. Upon selection of a dataset, the interactive dimesionality reduction plot in the first tab window will be displayed. Hovering over data points in plot communicates final cluster label, barcode, originating library, and cell type classification. Regions of the plot can be visualized in more detail with the zoom functionality. 
 
