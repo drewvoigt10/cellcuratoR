@@ -9,7 +9,7 @@ URL: www.github.com/drewvoigt10/cellcuratoR
 Description: cellcuratoR is a package for sharing interactive single-cell gene expression
     visualization from Seurat. This package can be used to interact with Seuart-analyzed 
     single-cell RNA sequencing data interactively with the R Shiny framework.
-License: MIT + file LICENSE
+License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.0

@@ -73,6 +73,10 @@ immune.combined@meta.data$celltype <- celltype
 
 # We add a treatment column to the seurat object so that differential expression can 
 # be performed between unstimulated and stimulated samples. Treatment must be a binary factor. 
+# In instances where there are multiple factor levels to a biological condition (eg early, mid, late disease
+# stage), the user is encouraged to create seperate columns in the meta.data for each comparison of 
+# interest (eg early vs late, ealy vs mid, mid vs late), and specifying all of these column names
+# in the additional_metadata_cols argument listed below.
 treatment <- as.factor(immune.combined@meta.data$orig.ident)
 immune.combined@meta.data <- data.frame(immune.combined@meta.data, treatment)
 ```

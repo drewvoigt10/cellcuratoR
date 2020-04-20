@@ -82,7 +82,12 @@ gg_color_hue <- function(n) {
 #'
 #'@param additional_metadata_cols Additional columns in the meta.data can be
 #' supplied that are available for differential expression in the shiny
-#' interface. Columns must be binary factors. Deafults to NULL.
+#' interface. Columns must be binary factors. In instances where there are
+#' multiple factor levels to a biological condition (eg early, mid, late disease
+#' stage), the user is encouraged to create seperate columns in the meta.data for
+#' each comparison of interest (eg early vs late, ealy vs mid, mid vs late),
+#' and specifying all of these comparisons in the additional_metadata_cols
+#' argument. Deafults to NULL.
 #'
 #' @param export_data_path A character string of the directory path where data
 #' should be exported. Of note, all exported data objects for shiny should be
