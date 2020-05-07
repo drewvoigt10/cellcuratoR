@@ -10,7 +10,7 @@ With cellcuratoR, any Seurat-processed (version > 3.0.0) object can easily be co
 ``` r
 devtools::install_github("drewvoigt10/cellcuratoR")
 ```
-Note: occasionally due to package dependency misaligment, R packages which cellcuratoR depends on do not properly install. If installation exits with `Error: Dependency package(s) "missing_package_name" not available` we suggest that one first attempts to install the missing packages manually via `install.packages("missing_package_name"")`.
+Note: occasionally due to package dependency misaligment, R packages which cellcuratoR depends on do not properly install. If installation exits with `Error: Dependency package(s) "missing_package_name" not available` we suggest that one first attempts to install the missing packages manually via `install.packages("missing_package_name")`.
 
 
 If you would like to install the vignettes, which will download the SeuratData ifnb dataset, specify this in install_github argument with:
