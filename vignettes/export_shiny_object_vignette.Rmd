@@ -101,7 +101,7 @@ export_shiny_object(seurat_object = immune.combined,
                     custom_cluster_colors = FALSE,
                     custom_library_colors = FALSE,
                     additional_metadata_cols = c("treatment"), # allows for dge between treatment groups
-                    export_data_path = file.path(my_filepath, "/my_cellcuratoR_objects/"))
+                    export_data_path = file.path(my_filepath, "/my_cellcuratoR_objects/infb_shiny/"))
 ## If re-running locally, the user should consider changing filepath 
 ## to ~/Desktop or other directory that is easier to navigate to
 ```
