@@ -86,6 +86,7 @@ Before interacting with the data, we must export the processed seurat object in 
 ```{r dir_create}
 ## consider changing filepath to ~/Desktop or other directory that is easier to navigate to
 my_filepath <- Sys.getenv("R_LIBS_USER")
+
 dir.create(file.path(my_filepath, "/my_cellcuratoR_objects/"))
 
 ```
