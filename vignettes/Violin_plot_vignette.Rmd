@@ -33,6 +33,7 @@ celltype <- plyr::mapvalues(x = pbmc_small@meta.data$RNA_snn_res.1,
                             to = c("celltype_A", "celltype_B", "celltype_C"))
 pbmc_small@meta.data <- data.frame(pbmc_small@meta.data, celltype)
 
+
 my_filepath <- Sys.getenv("R_LIBS_USER")
 print(paste0("exporting data to: ", my_filepath, "/pbmc_cellcuratoR_export/"))
 
