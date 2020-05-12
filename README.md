@@ -8,17 +8,9 @@ With cellcuratoR, any Seurat-processed (version > 3.0.0) object can easily be co
 ## Installation
 
 ``` r
-devtools::install_github("drewvoigt10/cellcuratoR")
-```
-Note: occasionally due to package dependency misalignment, R packages which cellcuratoR depends on do not properly install. If installation exits with `Error: Dependency package(s) "missing_package_name" not available` we suggest that one first attempts to install the missing packages manually via `install.packages("missing_package_name")`.
-
-
-If you would like to install the vignettes, which will download the SeuratData ifnb dataset, specify this in install_github argument with:
-
-``` r
 devtools::install_github("drewvoigt10/cellcuratoR", build_vignettes = TRUE)
 ```
-Note that installing the vignette may take an additional 10-20 minutes due to downloading a large example dataset and exporting the dataset with the `export_shiny_object()` function. 
+Note: occasionally due to package dependency misalignment, R packages which cellcuratoR depends on do not properly install. If installation exits with `Error: Dependency package(s) "missing_package_name" not available` we suggest that one first attempts to install the missing packages manually via `install.packages("missing_package_name")`.
 
 ---
 
@@ -33,7 +25,10 @@ Once an RNA sequencing dataset has undergone quality control and clustering in S
 library(cellcuratoR)
 vignette("export_shiny_object_vignette", package = "cellcuratoR")
 ```
-Briefly, the user should first create a directory (eg my_cellcuratoR_objects) in which to store exported data objects. The export_shiny_object() function requires the following basic arguments:
+
+Please note: this vignette is not completely evaluated on installation, as it requires writing and exporting datasets to the user's local machine. Accessing the vignette provides the codebase for obtaining an example dataset, processing the dataset, and exporting the object. It takes ~5-15 minutes to download and process the example dataset and ~5-10 minutes to export the dataset.
+
+The user should first create a directory (eg my_cellcuratoR_objects) in which to store exported data objects. The export_shiny_object() function requires the following basic arguments:
 + seurat_object: the S4 Seurat object of interest.
 + final_cluster_column_name: the column name (character string) in the meta.data that corresponds to the final cluster label of each cell. 
 + library_id_column_name: the column name (character string) in the meta.data that corresponds to the originating library of each cell. For canonical-correlation analyzed datasets, this is often the "orig.ident" column within the meta.data. 
