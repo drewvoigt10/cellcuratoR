@@ -17,7 +17,9 @@ knitr::opts_chunk$set(
 ```
 
 ## Overview
-This vignette will walk through the exportation of a processed seurat object that is compatible with the cellcuratoR shiny visualization system. Compatible S4 Seurat input objects should be supplied by the user that have either (A) been processed with Seuart (version 3) or (B) been updated to a version 3 Seurat object with the function UpdateSeuratObject(). Further, within the meta.data of the Seurat object, the user should have columns corresponding to a final cluster designation, a library-id, and a cell type classification, as walked through in this tutorial.
+This vignette will walk through the exportation of a processed seurat object that is compatible with the cellcuratoR shiny visualization system. The code from this vignette does not compile on installation (as this vignette creates data directories and writes files to the user's computer). Therefore, it is recommended to copy and paste code chunks from this vignette to run in a local R session.
+
+The export_seurat_object() function requires an S4 Seurat object. Compatible S4 Seurat input objects have either (A) been processed with Seuart (version 3) or (B) been updated to a version 3 Seurat object with the function UpdateSeuratObject(). Further, within the meta.data of the Seurat object, the user should have columns corresponding to a final cluster designation, a library-id, and a cell type classification, as explained below in this tutorial.
 
 We will walk through the exportation of a stimulated vs control pbmc dataset freely available from Seurat. We will use the ifnb data, in which peripheral blood mononuclear cells were divided into stimulated and control groups. For further details, see https://satijalab.org/seurat/v3.1/immune_alignment.html. First, we will download the ifnb dataset using the helpful SeuratData package.
 
@@ -70,24 +72,22 @@ celltype <- plyr::mapvalues(x = immune.combined@meta.data$seurat_clusters,
                                 from = seq(from = 0, to = 12), 
                                 to = seurat_celltypes)
 immune.combined@meta.data$celltype <- celltype
+```
 
-# We add a treatment column to the seurat object so that differential expression can 
-# be performed between unstimulated and stimulated samples. Treatment must be a binary factor. 
-# In instances where there are multiple factor levels to a biological condition (eg early, mid, late disease
-# stage), the user is encouraged to create seperate columns in the meta.data for each comparison of 
-# interest (eg early vs late, ealy vs mid, mid vs late), and specifying all of these column names
-# in the additional_metadata_cols argument listed below.
+
+We add an artificial treatment column to the seurat object so that differential expression can be performed between unstimulated and stimulated samples. Treatment must be a binary factor. In instances where there are multiple factor levels to a biological condition (eg early, mid, late disease stage), the user is encouraged to create seperate columns in the meta.data for each comparison of interest (eg early vs late, ealy vs mid, mid vs late), and specifying all of these column names in the additional_metadata_cols argument listed below.
+
+```{r treatment_factor, eval = FALSE}
 treatment <- as.factor(immune.combined@meta.data$orig.ident)
 immune.combined@meta.data <- data.frame(immune.combined@meta.data, treatment)
 ```
 
-
 Before interacting with the data, we must export the processed seurat object in a format interpretable by Shiny. First, we create a directory to organize all of our exported cellcuratoR objects:
 ```{r dir_create, eval = FALSE}
-## consider changing filepath to ~/Desktop or other directory that is easier to navigate to
+## The user should consider changing filepath to ~/Desktop or other directory that is easier to navigate to
 my_filepath <- Sys.getenv("R_LIBS_USER")
 
-dir.create(file.path(my_filepath, "/my_cellcuratoR_objects/"))
+dir.create(file.path(my_filepath, "my_cellcuratoR_objects/"))
 
 ```
 
@@ -101,7 +101,7 @@ export_shiny_object(seurat_object = immune.combined,
                     custom_cluster_colors = FALSE,
                     custom_library_colors = FALSE,
                     additional_metadata_cols = c("treatment"), # allows for dge between treatment groups
-                    export_data_path = file.path(my_filepath, "/my_cellcuratoR_objects/infb_shiny/"))
+                    export_data_path = file.path(my_filepath, "my_cellcuratoR_objects/infb_shiny/"))
 ## If re-running locally, the user should consider changing filepath 
 ## to ~/Desktop or other directory that is easier to navigate to
 ```
