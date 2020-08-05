@@ -375,7 +375,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
                      label = h3("Violin genes"),
                      choices = NULL,
                      multiple= TRUE,
-                     options= list(maxOptions = 50)
+                     options= list(maxOptions = 100)
       )
 
     )
