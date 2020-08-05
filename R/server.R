@@ -960,14 +960,14 @@ shinyAppServer <- shinyServer(function(session, input, output) {
     if(input$DE_class == 1) { # If the user wants to perform DGE on predefined clusters of cells...
 
       if(input$DE_identity == 1){ # If the user wants to perform DGE between cell selections...
-        Idents(loaded_data) <- "final_cluster_labels"
+        Seurat::Idents(loaded_data) <- "final_cluster_labels"
         de_group <- ifelse(loaded_data@meta.data$final_cluster_labels %in% input$DE_class_1, "Group_1",
                            ifelse(loaded_data@meta.data$final_cluster_labels %in% input$DE_class_2, "Group_2", "none"))
       } else { # If the user wants to perform DGE between a binary biological variable...
         # Although it would be easier to subset loaded_data to all cells in input$DE_class_1,
         # subset requires an integrated data slot (and would necessitate loading the large seurat
         # object, which I don't want to do here). I therefore implement this work-around:
-        Idents(loaded_data) <- as.character(input$DE_identity)
+        Seurat::Idents(loaded_data) <- as.character(input$DE_identity)
         binary_idents = levels(loaded_data@active.ident)
 
         de_group <- loaded_data@meta.data %>%
@@ -983,7 +983,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
       if(input$DE_identity == 1){ # If the user wants to perform DGE between cell selections...
         req(lasso_selection_1())
         req(lasso_selection_2())
-        Idents(loaded_data) <- "final_cluster_labels"
+        Seurat::Idents(loaded_data) <- "final_cluster_labels"
         barcodes <- rownames(loaded_data@meta.data)
         de_group <- ifelse(barcodes %in% lasso_selection_1(), "Group_1",
                            ifelse(barcodes %in% lasso_selection_2(), "Group_2", "not_selected"))
@@ -991,7 +991,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
       } else { # If the user wants to perform DGE between a binary biological variable...
         req(lasso_selection_1())
         barcodes <- rownames(loaded_data@meta.data)
-        Idents(loaded_data) <- as.character(input$DE_identity)
+        Seurat::Idents(loaded_data) <- as.character(input$DE_identity)
         binary_idents = levels(loaded_data@active.ident)
 
         de_group <- loaded_data@meta.data %>%
@@ -1013,7 +1013,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
 
   DE_markers <- reactive({
     loaded_data = DE_data()
-    Idents(loaded_data) <- "de_group"
+    Seurat::Idents(loaded_data) <- "de_group"
     withProgress(message = "performing DGE", value = 0, {
       variables <- find_dge_variables(object = loaded_data,
                                       ident.1 = "Group_1",
@@ -1087,18 +1087,18 @@ shinyAppServer <- shinyServer(function(session, input, output) {
     loaded_data <- DE_data()
 
     if(input$DE_identity == 1){ # If the user wants to perform DGE between a selected populations of cells...
-      Idents(loaded_data) <- "de_group"
+      Seurat::Idents(loaded_data) <- "de_group"
       myplot <- DimPlot(object = loaded_data,
                         cols = c("#F8766D", "#00BFC4", "darkgrey"))
     } else {
-      Idents(loaded_data) <- as.character(input$DE_identity)
+      Seurat::Idents(loaded_data) <- as.character(input$DE_identity)
       binary_idents <- levels(loaded_data@active.ident)
       plot_label <- ifelse(loaded_data$de_group == "Group_1", binary_idents[1],
                            ifelse(loaded_data$de_group == "Group_2", binary_idents[2], 'not_selected'))
       loaded_data@meta.data <- data.frame(loaded_data@meta.data, plot_label)
       loaded_data@meta.data$plot_label <- factor(loaded_data@meta.data$plot_label,
                                                  levels = c(binary_idents[1], binary_idents[2], "not_selected"))
-      Idents(loaded_data) <- "plot_label"
+      Seurat::Idents(loaded_data) <- "plot_label"
       myplot <- DimPlot(object = loaded_data,
                         cols = c("#F8766D", "#00BFC4", "darkgrey"))
     }
