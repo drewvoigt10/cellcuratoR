@@ -81,8 +81,8 @@ The user may also perform differential expression between other binary identitie
 
 ![](demo/DE_3_GIF.gif)
 
-## E. Downloading cellrangeR compatioble data objects from Spectacle (www.oculargeneexpression.org)
-Task TBD.
+## E. Downloading cellrangeR compatible data objects from Spectacle (www.oculargeneexpression.org)
+See the [Methods and Technology](https://oculargeneexpression.org/pages/methods_tech.html) section of OcularGeneExpression.org for pre-processed datasets in .RData formats. 
 
 ## F. Citation
 Task TBD. 

@@ -191,3 +191,19 @@ construct_violin_plot <- function(my_object, genes_to_investigate,
   p_cluster_expression
 }
 
+
+theme_violins <- function() {
+  theme(
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    axis.line.y = element_blank(),
+    panel.background = element_rect(fill = "white"),
+    panel.grid = element_blank(),
+    strip.background = element_blank(),
+    strip.text.x = element_text(size = rel(1.5)),
+    legend.position = "none"
+  )
+}
+
+

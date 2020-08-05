@@ -361,6 +361,7 @@ export_shiny_object <- function(seurat_object,
   #####      Create the Shiny Objects     #####
   #############################################
 
+
   seurat_obj <- new("Seurat",
                     reductions = my_reductions,
                     meta.data = my_final_metadata,

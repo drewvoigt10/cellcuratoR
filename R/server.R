@@ -271,7 +271,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
                      label = h3("gene for heatmap"),
                      choices = NULL,
                      multiple = FALSE,
-                     options= list(maxOptions = 50)
+                     options= list(maxOptions = 100)
       )
     )
   })
@@ -417,7 +417,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
     seurat_obj_big
   })
 
-  recluster_object <- eventReactive(input$start_recluster, {
+  recluster_object_initial <- eventReactive(input$start_recluster, {
     # using the seurat_recluster function, takes the larger seurat object (loaded_data_big()) and
     # Pulls out cells belonging to subset_clusters and performs renormalization followed by
     # UMAP, tSNE, and PCA dimensionality reduction.
@@ -435,29 +435,31 @@ shinyAppServer <- shinyServer(function(session, input, output) {
 
     ## Re-normalize (UMAP requires a large seurat object with the integrated data slot)
     new_object <- NormalizeData(new_object, normalization.method = "LogNormalize", scale.factor = 10000)
-    progress$inc(1/6, detail = paste("Finding Variable Features"))
+    progress$inc(1/5, detail = paste("Finding Variable Features"))
 
-    new_object <- FindVariableFeatures(new_object, selection.method = "vst", nfeatures = 2000)
+    new_object <- FindVariableFeatures(new_object, selection.method = input$selection_method, nfeatures = input$n_features)
     all.genes <- rownames(new_object)
-    progress$inc(1/6, detail = paste("Scaling Data"))
+    progress$inc(1/5, detail = paste("Scaling Data"))
     new_object <- ScaleData(new_object, features = all.genes)
 
-    progress$inc(1/6, detail = paste("Running PCA"))
+    progress$inc(1/5, detail = paste("Running PCA"))
     new_object <- RunPCA(new_object, features = VariableFeatures(object = new_object))
 
-    progress$inc(1/6, detail = paste("Finding Clusters and Neighbors"))
-    new_object <- FindNeighbors(new_object, dims = 1:20)
-    new_object <- FindClusters(new_object, resolution = 0.5)
-
-    progress$inc(1/6, detail = paste("Running UMAP"))
+    progress$inc(1/5, detail = paste("Running UMAP"))
     new_object <- RunUMAP(new_object, dims = 1:20)
 
-    progress$inc(1/6, detail = paste("Running tSNE"))
+    progress$inc(1/5, detail = paste("Running tSNE"))
     new_object <- RunTSNE(new_object, dims = 1:20)
 
+    return(new_object)
+  })
+
+  recluster_object <- reactive({
+    new_object <- recluster_object_initial()
+    new_object <- FindNeighbors(new_object, dims = 1:20)
+    new_object <- FindClusters(new_object, resolution = input$granularity)
 
     Seurat::Idents(new_object) <- "final_cluster_labels"
-
     return(new_object)
   })
 
@@ -471,7 +473,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
     req(recluster_object())
     recluster_object <- recluster_object()
 
-    if(input$reductionPlotColor == 1){ ### color cells by CLUSTER
+    if(input$reductionPlotColor == 1){ ### color cells by ORIGINAL CLUSTER
       Seurat::Idents(recluster_object) <- "final_cluster_labels"
       label_index <- names(summary(loaded_data()@meta.data$final_cluster_labels))
       selected_groups_index <- as.character(input$select_recluster)
@@ -480,14 +482,20 @@ shinyAppServer <- shinyServer(function(session, input, output) {
                    cols = final_colors()[which(label_index %in% selected_groups_index)])
     }
 
-    if(input$reductionPlotColor == 2){ ### color cells by LIBRARYID
+    if(input$reductionPlotColor == 2){ ### color cells by NEW CLUSTER
+      Seurat::Idents(recluster_object) <- paste0("RNA_snn_res.", input$granularity)
+      p <- DimPlot(recluster_object,
+                   reduction = input$recluster_reduction)
+    }
+
+    if(input$reductionPlotColor == 3){ ### color cells by LIBRARYID
       Seurat::Idents(recluster_object) <- "libraryID"
       p <- DimPlot(recluster_object,
                    reduction = input$recluster_reduction,
                    cols = final_library_colors())
     }
 
-    if(input$reductionPlotColor == 3){ ### color cells by GENE
+    if(input$reductionPlotColor == 4){ ### color cells by GENE
       req(input$reduction_plot_gene_heatmap)
       Seurat::Idents(recluster_object) <- "final_cluster_labels"
       feature_plot <- FeaturePlot(object = recluster_object,
@@ -527,7 +535,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
 
       feature_plot <- HoverLocator(plot = feature_plot,
                                    information = FetchData(object = recluster_object,
-                                                           vars = c("final_cluster_labels", "libraryID", "celltype")))
+                                                           vars = c("final_cluster_labels", "libraryID", "celltype")))  %>% toWebGL()
 
       p <- subplot(feature_plot,
                    ggplotly(heatmap_legend),
@@ -541,7 +549,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
 
   list_of_groups <- reactive({
     # Reactive expression that lists all of the final_cluster_labels within the loaded_data() seurat object
-    loaded_data()@meta.data$final_cluster_labels %>%
+    as.factor(loaded_data()@meta.data$final_cluster_labels) %>%
       levels()
   })
 
@@ -572,11 +580,11 @@ shinyAppServer <- shinyServer(function(session, input, output) {
   output$reclusterHelper3 <- renderUI({
     # The third UI helper for reclustering. This helper displays the choices for dimensionality reduction.
     conditionalPanel(
-      condition = "input.tabset2 == 'Recluster'",
+      condition = "input.tabset2 == 'Recluster' && input.recluster_settings",
       radioButtons("recluster_reduction",
                    label = "Dimensionality Reduction for reclustering",
                    choices = c("pca", "tsne", "umap"),
-                   selected = character(0)))
+                   selected = "umap"))
   })
 
   output$reclusterHelper4 <- renderUI({
@@ -586,7 +594,10 @@ shinyAppServer <- shinyServer(function(session, input, output) {
       condition = "input.tabset2 == 'Recluster'",
       selectInput(inputId = "reductionPlotColor",
                   label = h3("How should the cells be colored?"),
-                  choices = list("by cluster" = 1, "by libraryID" = 2, "by gene" = 3),
+                  choices = list("by original cluster" = 1,
+                                 "by new cluster" = 2,
+                                 "by libraryID" = 3,
+                                 "by gene" = 4),
                   selected = 1)
     )
   })
@@ -608,6 +619,50 @@ shinyAppServer <- shinyServer(function(session, input, output) {
     )
   })
 
+  output$reclusterHelper6 <- renderUI({
+    # The sixth UI helper for reclustering. This helper allows the user to chose how variable features will be chosen
+    conditionalPanel(
+      condition = "input.tabset2 == 'Recluster' && input.recluster_settings",
+      radioButtons("selection_method",
+                   label = "Selection method for variable features",
+                   choices = c("vst", "mvp"),
+                   selected = "vst"))
+  })
+
+  output$reclusterHelper7 <- renderUI({
+    # The seventh UI helper for reclustering. This helper displays how many variable features are used for normalization.
+    conditionalPanel(
+      condition = "input.tabset2 == 'Recluster' && input.recluster_settings",
+      sliderInput("n_features",
+                  label = "Number of variable features",
+                  min = 1500,
+                  max = 3000,
+                  step = 100,
+                  value = 2000))
+  })
+
+  output$reclusterHelper8 <- renderUI({
+    # The eighth UI helper for reclustering. This helper allows for adjustment of the granularity parameter.
+    conditionalPanel(
+      condition = "input.tabset2 == 'Recluster' && input.recluster_settings",
+      sliderInput("granularity",
+                  label = "Granularity of reclustering object",
+                  min = 0.1,
+                  max = 1.5,
+                  step = 0.1,
+                  value = 0.5))
+  })
+
+  output$reclusterHelper9 <- renderUI({
+    # The ninth UI helper for reclustering. Allows for advanced settings to be displayed.
+    conditionalPanel(
+      condition = "input.tabset2 == 'Recluster'",
+      checkboxInput("recluster_settings",
+                    label = "Show advanced recluster settings",
+                    value = FALSE
+      ))
+  })
+
   observeEvent(input$dataset, {
     choicesVec <- all_genes()$genes
     updateSelectizeInput(session, "reduction_plot_gene_heatmap",
@@ -625,6 +680,29 @@ shinyAppServer <- shinyServer(function(session, input, output) {
   ######################
   ### DE CODE ###
   ######################
+  dge_data <- reactive({
+    req(input$DE_dataset)
+    ## dge_data creates a switch to transition between the default loaded data object and the
+    ## reclustered data object for differential expression
+    if(input$DE_dataset == 2){
+      dge_data <- recluster_object()
+      dge_data@misc$clustering_method <- input$recluster_reduction
+      dge_data[["final_cluster_labels"]] <- dge_data[[paste0("RNA_snn_res.", input$granularity)]]
+      delete_indexes <- which(colnames(dge_data@meta.data) %in% c("nCount_RNA", "nFeature_RNA", "seurat_clusters", paste0("RNA_snn_res.", input$granularity)))
+      dge_data@meta.data <- dge_data@meta.data[,-delete_indexes]
+
+    } else {
+      dge_data <- loaded_data()
+    }
+    return(dge_data)
+  })
+
+  list_of_groups_dge <- reactive({
+    # Reactive expression that lists all of the final_cluster_labels within the loaded_data() seurat object
+    dge_data()@meta.data$final_cluster_labels %>%
+      levels()
+  })
+
   plot_data <- reactive({
     # plot_data() stores the UMAP or tSNE coordinates of genes for interactive selection with plotly functions.
     # For example, the user can select the laso tool and circle populations of interest to perform differential expression.
@@ -632,7 +710,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
     # including the barcode of selected cells, the final_cluster_labels, and other meta data is appended to plot data
     # which is then used to create the relevant differential-expression plots (dePlot1 and dePlot2, below).
     if(input$tabset1 == "Differential Expression (Group 1)" | input$tabset2 == "Differential Expression (Group 2)"){
-      loaded_data <- loaded_data()
+      loaded_data <- dge_data()
       clustering_method <- loaded_data@misc$clustering_method ## default clustering method used,
       ## either "umap" or "tsne" - automatically generated by the export seurat object function
 
@@ -669,7 +747,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
     )
 
     req(input$DE_class)
-    clustering_method <- loaded_data()@misc$clustering_method
+    clustering_method <- dge_data()@misc$clustering_method
 
     x_axis <- list(
       title = paste0(clustering_method, "_1"),
@@ -711,7 +789,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
     req(input$DE_class)
 
     if(input$DE_class == 2 & input$DE_identity == 1){
-      clustering_method <-  loaded_data()@misc$clustering_method
+      clustering_method <-  dge_data()@misc$clustering_method
 
       x_axis <- list(
         title = paste0(clustering_method, "_1"),
@@ -800,7 +878,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
                    label = "Select cells for differential expression:",
                    choices = c("predefined clusters" = 1,
                                "manually selected populations (draw laso)" = 2),
-                   selected = character(0))
+                   selected = 1)
     )
   })
 
@@ -810,13 +888,27 @@ shinyAppServer <- shinyServer(function(session, input, output) {
     # can be performed between cells originating from the fovea vs periphery if a binary "region" variable
     # is exported with the meta.data using the export_seurat_object() function.
 
-    additional_idents <- colnames(loaded_data()@meta.data)[-c(1:3)]
+    additional_idents <- colnames(dge_data()@meta.data)[-c(1:3)]
     conditionalPanel(
       condition = "input.tabset1 == 'Differential Expression (Group 1)'",
       radioButtons(inputId = "DE_identity",
                    label = "Perform differential expression between:",
                    choices = c("all selected cells (default)" = 1,
                                additional_idents),
+                   selected = 1)
+    )
+  })
+
+  output$deHelper6 <- renderUI({
+    # The sixth helper function displayed under tabset 1. Allows the user to select
+    # different datasets (eg reclustered vs default) for DGE
+
+    conditionalPanel(
+      condition = "input.tabset1 == 'Differential Expression (Group 1)'",
+      radioButtons(inputId = "DE_dataset",
+                   label = "Select dataset for differential expression:",
+                   choices = c("Default object" = 1,
+                               "Reclustered object (user must first recluster cells using the 'recluster' tab)" = 2),
                    selected = 1)
     )
   })
@@ -831,7 +923,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
       condition = "input.tabset2 == 'Differential Expression (Group 2)' && input.DE_class == 1",
       checkboxGroupInput(inputId = "DE_class_1",
                          label = h3("Group 1"),
-                         choices = list_of_groups(),
+                         choices = list_of_groups_dge(),
                          selected = NULL)
     )
   })
@@ -847,7 +939,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
       condition = "input.tabset2 == 'Differential Expression (Group 2)' && input.DE_class == 1 && input.DE_identity == 1",
       checkboxGroupInput(inputId = "DE_class_2",
                          label = h3("Group 2"),
-                         choices = list_of_groups(),
+                         choices = list_of_groups_dge(),
                          selected = NULL)
     )
   })
@@ -864,7 +956,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
     # DE_data contains an additional column in the meta.data, de_group, that communicates what cells
     # should be in each investigated group for differential expression.
 
-    loaded_data <- loaded_data()
+    loaded_data <- dge_data()
     if(input$DE_class == 1) { # If the user wants to perform DGE on predefined clusters of cells...
 
       if(input$DE_identity == 1){ # If the user wants to perform DGE between cell selections...

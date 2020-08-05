@@ -65,6 +65,7 @@ body <- dashboardBody(
                        uiOutput("featurePlotHelper"),
                        uiOutput("deHelper"),
                        uiOutput("deHelper2"),
+                       uiOutput("deHelper6"),
                        uiOutput("deHelper3"),
                        uiOutput("deHelper5")
                 )
@@ -74,7 +75,11 @@ body <- dashboardBody(
                        uiOutput("violinHelper"),
                        uiOutput("violinDownload"),
                        uiOutput("reclusterHelper"),
+                       uiOutput("reclusterHelper9"),
                        uiOutput("reclusterHelper3"),
+                       uiOutput("reclusterHelper6"),
+                       uiOutput("reclusterHelper7"),
+                       uiOutput("reclusterHelper8"),
                        uiOutput("reclusterHelper2"),
                        uiOutput("reclusterHelper4"),
                        uiOutput("reclusterHelper5"),
