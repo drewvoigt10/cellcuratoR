@@ -614,7 +614,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
                      choices = NULL,
                      multiple = FALSE,
                      selected = NULL,
-                     options= list(maxOptions = 50)
+                     options= list(maxOptions = 100)
       )
     )
   })
