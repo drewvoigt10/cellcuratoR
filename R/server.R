@@ -14,7 +14,7 @@
 #' @importFrom stats hclust rnorm
 #' @importFrom Seurat Idents DimPlot FeaturePlot GetAssayData NormalizeData FindVariableFeatures WhichCells RunUMAP RunTSNE VariableFeatures ScaleData RunPCA FindNeighbors Tool FindClusters FindMarkers DefaultAssay FetchData HoverLocator AverageExpression
 #' @importFrom ggdendro dendro_data segment label
-#' @importFrom plotly ggplotly renderPlotly subplot plot_ly layout event_data
+#' @importFrom plotly ggplotly renderPlotly subplot plot_ly layout event_data toWebGL
 #' @importFrom patchwork plot_layout
 #' @importFrom shiny Progress validate reactive renderText renderUI req validate conditionalPanel selectInput renderImage actionButton selectizeInput
 #' @importFrom shiny updateSelectizeInput downloadButton eventReactive checkboxGroupInput radioButtons sliderInput withProgress shinyServer icon plotOutput
@@ -175,7 +175,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
                       xlab("") +
                       ylab(""))
     sp <- subplot(main, leg, widths = c(reactive_width1, reactive_width2), titleY = TRUE, titleX = TRUE)
-    sp
+    sp %>% plotly::toWebGL()
   })
 
   output$umapHelper <- renderUI({
@@ -232,7 +232,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
 
     feature_plot <- HoverLocator(plot = feature_plot,
                                  information = FetchData(object = loaded_plot_data,
-                                                         vars = c("final_cluster_labels", "libraryID", "celltype")))
+                                                         vars = c("final_cluster_labels", "libraryID", "celltype"))) %>% plotly::toWebGL()
 
     subplot(feature_plot,
             ggplotly(heatmap_legend),
@@ -535,7 +535,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
 
       feature_plot <- HoverLocator(plot = feature_plot,
                                    information = FetchData(object = recluster_object,
-                                                           vars = c("final_cluster_labels", "libraryID", "celltype")))  %>% toWebGL()
+                                                           vars = c("final_cluster_labels", "libraryID", "celltype")))  %>% plotly::toWebGL()
 
       p <- subplot(feature_plot,
                    ggplotly(heatmap_legend),
@@ -608,7 +608,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
     # where the user can input the gene of interest.
 
     conditionalPanel(
-      condition = "input.tabset2 == 'Recluster' && input.reductionPlotColor == 3",
+      condition = "input.tabset2 == 'Recluster' && input.reductionPlotColor == 4",
       selectizeInput("reduction_plot_gene_heatmap",
                      label = h3("gene for heatmap"),
                      choices = NULL,
@@ -778,7 +778,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
     if(input$DE_class == 2) {
       p <- p %>% layout(dragmode = "lasso")
     } ## select the lasso tool if the user selects "draw lasso"
-    p
+    p %>% plotly::toWebGL()
 
   })
 
@@ -818,7 +818,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
         p <- p %>% layout(dragmode = "lasso")
       } ## select the lasso tool if the user selects "draw lasso"
 
-      p
+      p %>% plotly::toWebGL()
     }
   })
 
@@ -1078,7 +1078,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
                           text = ~paste("gene: ", gene,
                                         '</br> logFC: ', round(avg_logFC, 3),
                                         '</br> delta percent: ', round(delta_percent, 3))) %>% layout(xaxis = x_axis_delta, yaxis = y_axis_delta) %>%
-      layout(showlegend = FALSE)
+      layout(showlegend = FALSE) %>% plotly::toWebGL()
   })
 
   output$cluster_visualization <- renderPlotly({
@@ -1102,7 +1102,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
       myplot <- DimPlot(object = loaded_data,
                         cols = c("#F8766D", "#00BFC4", "darkgrey"))
     }
-    myplot
+    myplot %>% plotly::toWebGL()
 
   })
 
