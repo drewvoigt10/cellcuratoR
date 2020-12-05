@@ -85,4 +85,5 @@ The user may also perform differential expression between other binary identitie
 See the [Methods and Technology](https://oculargeneexpression.org/pages/methods_tech.html) section of OcularGeneExpression.org for pre-processed datasets in .RData formats. 
 
 ## F. Citation
-Task TBD. 
+If you use cellcuratoR for your research, please consider citing the article that describes the package.
+See [Spectacle: An interactive resource for ocular single-cell RNA sequencing data analysis](https://pubmed.ncbi.nlm.nih.gov/32910939/)
