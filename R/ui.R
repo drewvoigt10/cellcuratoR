@@ -49,6 +49,7 @@ body <- dashboardBody(
                 height = "700px",
                 tabPanel("Violin Plot",
                          plotOutput("violin_plot", height = "650px")
+
                 ),
                 tabPanel("Recluster",
                          plotlyOutput("recluster_plot", height = "650px")

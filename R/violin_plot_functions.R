@@ -26,7 +26,10 @@
 #'
 #' @export
 prepare_violin_data_colors <-
-  function(my_object, genes_to_investigate, dendrogram_input, colors) {
+  function(my_object,
+           genes_to_investigate,
+           dendrogram_input,
+           colors) {
     n_genes <- length(genes_to_investigate)
 
     n_clusters <-
@@ -157,8 +160,11 @@ prepare_violin_data_colors <-
 #'}
 #'
 #' @export
-construct_violin_plot <- function(my_object, genes_to_investigate,
-                                  dendrogram_input, colors, use_noise = TRUE,
+construct_violin_plot <- function(my_object,
+                                  genes_to_investigate,
+                                  dendrogram_input,
+                                  colors,
+                                  use_noise = TRUE,
                                   scale = "free_x") {
 
   object_data <-

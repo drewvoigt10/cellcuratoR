@@ -7,7 +7,7 @@
 #' @importFrom ggplot2 ggplot aes element_blank theme geom_point geom_text position_nudge
 #' @importFrom ggplot2 theme_classic ggtitle xlab ylab geom_tile scale_x_continuous
 #' @importFrom ggplot2 scale_fill_gradient scale_y_reverse coord_flip ggsave
-#' @importFrom dplyr full_join mutate filter select arrange desc
+#' @importFrom dplyr full_join mutate filter select arrange desc count
 #' @importFrom DT renderDataTable
 #' @importFrom magrittr "%>%"
 #' @importFrom grDevices hcl
@@ -94,7 +94,11 @@ shinyAppServer <- shinyServer(function(session, input, output) {
     # Load in hc_final, the Hierarchical Clustering dendrogram created by the export seurat object function
     req(input$dataset)
     #load(paste0("../data2/", input$dataset, "/", "final_dendrogram.RData"))
-    final.dendrogram <- loaded_data()@misc$dendrogram
+    if(loaded_data()@misc$plot_dendrogram == TRUE) {
+      final.dendrogram <- loaded_data()@misc$dendrogram
+      } else {
+      final.dendrogram <- NULL
+      }
     final.dendrogram
   })
 
@@ -322,35 +326,66 @@ shinyAppServer <- shinyServer(function(session, input, output) {
         dendrogram_input = hc_final(),
         colors = final_colors(),
         use_noise = TRUE
-      ) +
-      theme_violins()
+      )
 
-    dendrogram_data <- ggdendro::dendro_data(hc_final(), type = "rectangle")
+    if(is.null(hc_final()) == FALSE){
+      dendrogram_data <- ggdendro::dendro_data(hc_final(), type = "rectangle")
 
-    p_dendrogram <-
-      ggdendro::segment(dendrogram_data) %>%
-      ggplot(aes(x = x, y = y)) +
-      geom_segment(
-        aes(
-          xend = xend,
-          yend = yend
-        )
-      ) +
-      geom_text(
-        data = ggdendro::label(dendrogram_data),
-        aes(label = label),
-        hjust = 1,
-        vjust = -0.7,
-        size = 6
-      ) +
-      scale_y_reverse() +
-      scale_x_continuous(expand = c(0, 0.6)) +
-      coord_flip() +
-      theme_violins()
+      p_dendrogram <-
+        ggdendro::segment(dendrogram_data) %>%
+        ggplot(aes(x = x, y = y)) +
+        geom_segment(
+          aes(
+            xend = xend,
+            yend = yend
+          )
+        ) +
+        geom_text(
+          data = ggdendro::label(dendrogram_data),
+          aes(label = label),
+          hjust = 1,
+          vjust = -0.7,
+          size = 6
+        ) +
+        scale_y_reverse() +
+        scale_x_continuous(expand = c(0, 0.6)) +
+        coord_flip() +
+        theme_violins()
 
-    p_dendrogram +
-      p_violins +
-      patchwork::plot_layout(ncol = 2, widths = c(3, 7))
+      p_violins <- p_violins +
+        theme_violins()
+
+      return_violin_plot <- p_dendrogram +
+        p_violins +
+        patchwork::plot_layout(ncol = 2, widths = c(3, 7))
+    } else {
+
+      cluster_labels_df  <- loaded_plot_data@meta.data %>%
+        group_by(final_cluster_labels) %>%
+        count(celltype) %>%
+        mutate(y_axis_label = paste0(final_cluster_labels, ": ", celltype))
+
+      return_violin_plot <-
+        p_violins +
+          scale_x_discrete(breaks = c(cluster_labels_df[["final_cluster_labels"]]),
+                           labels = c(cluster_labels_df[["y_axis_label"]])
+                           ) +
+          theme(
+            axis.title = element_blank(),
+            axis.text.x = element_blank(),
+            axis.text.y = element_text(size = 14),
+            axis.ticks = element_blank(),
+            axis.line.y = element_blank(),
+            panel.background = element_rect(fill = "white"),
+            panel.grid = element_blank(),
+            strip.background = element_blank(),
+            strip.text.x = element_text(size = rel(1.5)),
+            legend.position = "none"
+          )
+        }
+
+  return_violin_plot
+
   })
 
   output$violin_plot <- renderPlot({
@@ -1118,6 +1153,7 @@ shinyAppServer <- shinyServer(function(session, input, output) {
       alt = "error: www directory not found"
     ))
   }, deleteFile = FALSE)
+
 
 
 

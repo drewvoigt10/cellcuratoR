@@ -63,10 +63,13 @@ gg_color_hue <- function(n) {
 #'
 #' @param create_dendrogram TRUE/FALSE argument if a dendrogram should be
 #' created. The dendrogram is used by the shiny interface to organize the
-#' appearance of clusters in violin plots. User should select TRUE unless
-#' they have built a dendrogram with custom settings. Defaults to TRUE.
+#' appearance of clusters in violin plots. User should select TRUE if they
+#' would like a dendrogram to organize the relationships between clusters.
+#' However, this involves calculating enriched genes in each cluster
+#' and can add substantial computational time to exporting. Defaults
+#' to FALSE
 #'
-#' @param replacement_dendrogram If the user has already created a
+#' @param replacement_dendrogram If the user has already created a custom
 #' dendrogram of cell clusters, the dendrogram can be supplied as a
 #' .RData object. Defaults to NULL.
 #'
@@ -115,12 +118,13 @@ export_shiny_object <- function(seurat_object,
                                 final_cluster_column_name,
                                 library_id_column_name,
                                 classification_column_name,
-                                create_dendrogram = TRUE,
+                                create_dendrogram = FALSE,
                                 replacement_dendrogram = NULL,
                                 custom_cluster_colors = FALSE,
                                 custom_library_colors = FALSE,
                                 additional_metadata_cols = NULL,
                                 export_data_path) {
+  print("starting export")
   DefaultAssay(seurat_object) <- "RNA" # default assay of
                                        # object must be RNA
   # create export directory
@@ -219,7 +223,7 @@ export_shiny_object <- function(seurat_object,
 
   # Colors for the libraryID are based on the number of unique elements in the
   # libraryID column
-  n_libraries <- length(summary(as.factor(my_final_metadata$libraryID)))
+  n_libraries <- my_final_metadata[["libraryID"]] %>% as.factor() %>% levels() %>% length()
   # if a vector is supplied to custom_cluster_colors
   if (length(custom_library_colors) > 1) {
     if (length(custom_library_colors) == n_libraries) {
@@ -254,7 +258,7 @@ export_shiny_object <- function(seurat_object,
   # express similar genes we will use the original seurat object as it
   # still has expression data for all genes we will identify the 100
   # most enriched genes in each cluster before hierarchical clustering
-  if (create_dendrogram == TRUE) {
+  if(create_dendrogram == TRUE) {
     Idents(seurat_object) <- final_cluster_column_name
 
     identity_vector <- names(
@@ -304,7 +308,8 @@ export_shiny_object <- function(seurat_object,
       dplyr::mutate(label = paste0(final_cluster_labels, ": ", celltype))
 
     final_dendrogram$labels <- nicknames_tibble$label
-  } else {
+  }
+  if(is.null(replacement_dendrogram) == FALSE) {
     final_dendrogram <- replacement_dendrogram
   }
 
@@ -317,12 +322,21 @@ export_shiny_object <- function(seurat_object,
                        ifelse(is.null(seurat_object@reductions$tsne) == FALSE, "tsne",
                        ifelse(is.null(seurat_object@reductions$pca) == FALSE, "pca", "none")))
 
+  # To save time while exporting, a dendrogram does NOT need to be created. The variable
+  # plot_dendrogram (stored in the list misc) contains a TRUE/FALSE variable if a dendrogram should be plotted
+  plot_dendrogram <- ifelse(
+    create_dendrogram == TRUE | is.null(replacement_dendrogram) == FALSE, TRUE, FALSE
+  )
 
   misc <- list(clustering_method = clustering_method,
                final_colors = final_colors,
                final_library_colors = final_library_colors,
-               dendrogram = final_dendrogram
+               plot_dendrogram = plot_dendrogram
                )
+
+  if(plot_dendrogram == TRUE){
+    misc[["dendrogram"]] <- final_dendrogram
+  }
 
 
   #############################################
@@ -361,7 +375,6 @@ export_shiny_object <- function(seurat_object,
   #####      Create the Shiny Objects     #####
   #############################################
 
-
   seurat_obj <- new("Seurat",
                     reductions = my_reductions,
                     meta.data = my_final_metadata,
@@ -376,7 +389,7 @@ export_shiny_object <- function(seurat_object,
   #############################################
   #####  save created objects for shiny   #####
   #############################################
-
+  print("saving exported objects")
   save(seurat_obj, file = paste0(export_data_path, "/seurat_obj.RData"))
   save(seurat_obj_big, file = paste0(export_data_path, "/seurat_obj_big.RData"))
 }
