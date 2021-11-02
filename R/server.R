@@ -1091,9 +1091,16 @@ shinyAppServer <- shinyServer(function(session, input, output) {
     # Displays a delta_plot of differential expression results:
     # x-axis: Delta-percent (pct cells expressing gene in group 1 - pct cells expressing gene in group 2)
     # y-axis: logFC (+ = increased in group 1, - = increased in group 2)
+
+    avg_logFC_var <- ifelse( #### new
+      str_detect(
+        as.character(
+          packageVersion("Seurat")),
+        "^4."), "avg_log2FC", "avg_logFC")
+
     regional_differences <- DE_markers() %>%
       mutate(delta_percent = pct.1 - pct.2) %>%
-      mutate(group = ifelse(avg_logFC > 0, "Group 1", "Group 2"))
+      mutate(group = ifelse(!!rlang::sym(avg_logFC_var) > 0, "Group 1", "Group 2"))
 
     x_axis_delta <- list(
       title = "delta percent",
@@ -1101,17 +1108,17 @@ shinyAppServer <- shinyServer(function(session, input, output) {
     )
 
     y_axis_delta <- list(
-      title = "avg_logFC",
+      title = avg_logFC_var,
       tickvals = c(-3,-2,-1,0,1,2,3)
     )
 
-    delta_plot <- plot_ly(type = "scatter", data = regional_differences, x = regional_differences$delta_percent, y = regional_differences$avg_logFC,
+    delta_plot <- plot_ly(type = "scatter", data = regional_differences, x = regional_differences$delta_percent, y = regional_differences[[avg_logFC_var]],
                           mode = "markers",
                           color = ~group, colors = c("#F8766D", "#00BFC4"),
                           marker = list(size = 10,
                                         line = list(color = "black", width=1)),
                           text = ~paste("gene: ", gene,
-                                        '</br> logFC: ', round(avg_logFC, 3),
+                                        '</br> ', avg_logFC_var, ': ', round(regional_differences[[avg_logFC_var]], 3),
                                         '</br> delta percent: ', round(delta_percent, 3))) %>% layout(xaxis = x_axis_delta, yaxis = y_axis_delta) %>%
       layout(showlegend = FALSE) %>% plotly::toWebGL()
   })
