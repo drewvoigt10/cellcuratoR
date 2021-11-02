@@ -276,16 +276,24 @@ export_shiny_object <- function(seurat_object,
                               min.pct = 0.5,
                               logfc.threshold = 0.5)
 
+      avg_logFC_var <- ifelse( #### new
+        str_detect(
+          as.character(
+            packageVersion("Seurat")),
+          "^4."), "avg_log2FC", "avg_logFC")
+
       enriched_genes <- de_genes %>%
         rownames_to_column("gene") %>%
-        dplyr::filter(avg_logFC > 0) %>%
-        arrange(desc(avg_logFC))
+        dplyr::filter(!!rlang::sym(avg_logFC_var) > 0) %>%
+        arrange(desc(!!rlang::sym(avg_logFC_var))) %>%
+        top_n(100, !!rlang::sym(avg_logFC_var)) %>%
+        pull(gene)
 
-      if (nrow(enriched_genes) > 100) {
-        all_enriched_genes <- c(all_enriched_genes, enriched_genes[1:100, 1])
+      if (length(enriched_genes) > 100) {
+        all_enriched_genes <- c(all_enriched_genes, enriched_genes[1:100])
       } else {
-        all_enriched_genes <- c(all_enriched_genes, enriched_genes[, 1])
-      }
+        all_enriched_genes <- c(all_enriched_genes, enriched_genes)
+      } #### end
     }
     final_enriched_genes <- unique(all_enriched_genes)
 
