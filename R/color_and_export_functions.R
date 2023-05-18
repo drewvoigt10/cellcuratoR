@@ -301,7 +301,7 @@ export_shiny_object <- function(seurat_object,
     dendrogram_avg_expression <- AverageExpression(seurat_object,
                                                    features = final_enriched_genes,
                                                    assays = "RNA")
-    dist <- dist(t(dendrogram_avg_expression$RNA), method = "canberra")
+    dist <- dist(Transpose(dendrogram_avg_expression$RNA), method = "canberra")
     hc <- hclust(dist, method = "complete")
     final_dendrogram <- hc
 
